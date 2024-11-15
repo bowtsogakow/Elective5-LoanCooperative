@@ -4,6 +4,8 @@ from django.shortcuts import render
 from .forms import ImageUploadForm, LoanForm
 from django.utils.timezone import now
 from .models import Client, Loan
+import qrcode 
+from .utils import generate_qr_code
 
 #This is for setting up the front end alone
 
@@ -59,13 +61,25 @@ def registerLoan(request):
         if client:
           if client.co_maker == None:
             return HttpResponse('Please add co-maker of the client')
+          
+          loan_db = Loan.objects.filter(client__id = client_id, status = "ongoing").first()
 
+          if loan_db : 
+            return HttpResponse('Client has ongoing loan')
+          
           loan.save()
-        
-          return HttpResponse('Loan successfully registered')
+
+          loan_db = Loan.objects.filter(client__id = client_id, status = "ongoing").first()
+          qr_code_image = generate_qr_code(loan_db.qr_code)
+          print(qr_code_image)
+
+          return render(request, 'AgriTrust/registerLoan.html', {'qr_code_image' : qr_code_image})
         
         return HttpResponse('Client not found')
 
   else: 
     form =  LoanForm()
   return render(request, 'AgriTrust/registerLoan.html', {'form': form})
+
+
+# def payLOan

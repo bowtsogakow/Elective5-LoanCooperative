@@ -1,9 +1,17 @@
 <html>
-  <form method="post" enctype="multipart/form-data"> 
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-  </form>
+
+  {% if qr_code_image %}
+    <p> Yehey </p>
+    <img alt="qr_code_image" src = "data:image/png;base64,{{ qr_code_image }}">
+    
+  {% elif form %}
+    <form method="post"> 
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Submit</button>
+    </form>
+  {%endif %}
+  
 </html>
 
 
