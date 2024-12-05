@@ -1,0 +1,71 @@
+<html>
+
+    {% include 'AgriTrust/import.html' %}
+    {% include 'AgriTrust/css.html' %}    
+
+    <style>
+        .loans-div {
+            loans-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            table {
+                th {
+                    background-color: var(--txt1);
+                    color: var(--txt3);
+                }
+            }
+        }
+
+    </style>
+
+    <body> 
+
+        {% include 'AgriTrust/header.html' %}
+        
+        <div class="loans-div cont-body">
+            <h5> Loans </h5>
+            <div class="cont">
+                <div class="loans-cont"></div>
+
+                <div>
+                    <button onClick="window.location.href='{% url 'loan_add' %}';"> Add Loan </button>
+                </div>
+
+                <div>
+                    <table class="table table-bordered table-hover table-responsive"> 
+                        <tr> 
+                            <th> id </th>
+                            <th>Client Name</th>
+                            <th> Amount </th>
+                            <th> Status </th>
+                            <th> Start Date </th>
+                            <th> End Date </th>
+                            <th> Daily Payment </th>
+                            <th> Days Left </th>
+                            <th> Days Ahead/Behind (+/-) </th>
+                        </tr>
+                        {%for loan in loans%}
+                            <tr  onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
+                                <td> {{loan.id}} </td>
+                                <td> {{loan.client_name}} </a> </td>
+                                <td> {{loan.amount}} </td>
+                                <td> {{loan.status}} </td>
+                                <td> {{loan.start_date}} </td>
+                                <td> {{loan.end_date}} </td>
+                                <td> {{loan.daily_payment}} </td>
+                                <td> {{loan.days_left}} </td>
+                                <td> {{loan.payment_position}} </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+            
+                
+                </div>
+            </div>
+        </div>
+
+    </body>
+<html>

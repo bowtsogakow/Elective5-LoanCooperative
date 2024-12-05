@@ -1,0 +1,27 @@
+<html> 
+    
+    <body> 
+
+        {% include 'AgriTrust/header.html' %}
+
+        <a href = "{% url 'loan_list' %}"> &lt; Back </a>
+
+        <p> {{ loan.id }} </p>
+        <p> {{ loan.client }} </p>
+        <p> {{ loan.amount_loaned }} </p>
+        <p> {{ loan.interest_percentage }} </p>
+        <p> {{ loan.loan_term }} </p>
+        <p> {{ loan.interest_mode }} </p>
+        <p> {{ loan.interest }} </p>
+        <p> {{ loan.total }} </p>
+        <p> {{ loan.days_total }} </p>
+        <p> {{ loan.days_paid }} </p>
+        <p> {{ loan.total_amount_paid }} </p>
+        <p> {{ loan.status }} </p>
+        <p> {{ loan.date_created }} </p>
+        <p> {{ loan.date_end }} </p>
+        <p> {{ loan.daily_payment }} </p>
+        <p> {{ loan.days_left }} </p>
+
+    </body>
+</html>

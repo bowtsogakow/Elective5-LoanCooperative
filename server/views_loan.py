@@ -1,8 +1,10 @@
+import datetime
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from server.models import Loan, User
+
 
 @api_view(["POST"])
 def add_loan(request): 
@@ -38,8 +40,8 @@ def add_loan(request):
     try : 
         new_loan = Loan(client = client, 
                         loan_term = loan_term, 
-                        amount_loaned = amount_loaned, 
-                        interest_percentage = interest_percentage, 
+                        amount_loaned = float(amount_loaned), 
+                        interest_percentage = float(interest_percentage), 
                         interest_mode = interest_mode)    
         
         new_loan.compute_and_save()
@@ -56,5 +58,68 @@ def add_loan(request):
     })
 
 @api_view(["GET"])
-def get_ongoing_loans(request):
-    loans = Loan.objects.filter(status = "ongoing").order_by
+def get_all_loans(request):
+    loans = Loan.objects.filter(status = "ongoing").order_by("-date_created")
+    print(loans)
+    
+    response = []
+    for loan in loans :
+        
+        days_passed = (datetime.date.today() - loan.date_created).days
+        payment_position = days_passed - loan.days_paid
+
+        data = {
+            "id" : loan.id,
+            "client_name" : loan.client.full_name,
+            "amount" : loan.amount_loaned, 
+            "status" : loan.status, 
+            "start_date" : loan.date_created,
+            "end_date" : loan.date_end,
+            "daily_payment" : loan.daily_payment, 
+            "days_left" : loan.days_total - loan.days_paid, 
+            "payment_position" : payment_position
+        }
+
+        response.append(data)
+
+    return Response({
+        "status" : 1,   
+        "status_message" : "Loans retrieved successfully",
+        "loans" : response
+    })
+
+
+@api_view(["GET"])
+def get_loan_by_id(request, loan_id):
+    loan = Loan.objects.filter(id = loan_id).first()
+
+    if not loan : 
+        return Response({
+            "status" : 0,
+            "status_message" : "Loan does not exist"
+        })
+    
+    data = {
+        "id" : loan.id,
+        "client_name" : loan.client.full_name,
+        "amount_loaned" : loan.amount_loaned, 
+        "interest_percentage" : loan.interest_percentage,
+        "loan_term" : loan.loan_term,
+        "interest_mode" : loan.interest_mode,
+        "interest" : loan.interest,
+        "total" : loan.total,
+        "days_total" : loan.days_total,
+        "days_paid" : loan.days_paid,
+        "total_amount_paid" : loan.total_amount_paid,
+        "status" : loan.status, 
+        "date_created" : loan.date_created,
+        "date_end" : loan.date_end,
+        "daily_payment" : loan.daily_payment, 
+        "days_left" : loan.days_total - loan.days_paid
+    }
+
+    return Response({
+        "status" : 1,   
+        "status_message" : "Loan retrieved successfully",
+        "loan" : data
+    })

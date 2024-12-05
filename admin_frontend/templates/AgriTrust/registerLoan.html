@@ -1,37 +1,71 @@
 <html>
 
-  {% if qr_code_image %}
-    <p> Yehey </p>
-    <img alt="qr_code_image" src = "data:image/png;base64,{{ qr_code_image }}">
-    
-  {% elif form %}
-    <form method="post"> 
+  <body>
+
+    {% include 'AgriTrust/header.html' %}
+
+    <form method="POST" id = "addLoanForm">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Submit</button>
+      <div>
+          <label for="client_id">Client Name:</label> 
+          <input type="text" id="client_id" name="client_id" required>
+      </div>
+      <div>
+          <label for="loan_term">Loan Term:</label>
+          <select id="loan_term" name="loan_term" required>
+          {% for value, label in loan_terms_choices %}
+              <option value="{{ value }}">{{ label }}</option>
+          {%endfor%}
+          </select>
+      </div>
+      <div>
+          <label for="amount_loaned">Amount:</label>
+          <input type="text" id="amount_loaned" name="amount_loaned" required>
+      </div>
+      <div>
+          <label for="interest_percentage">Interest Percentage:</label>
+          <input id="interest_percentage" name="interest_percentage"  required></textarea>
+      </div>
+      <div>
+          <label for="interest_mode">Interest Mode:</label>
+          <select id="interest_mode" name="interest_mode" required>
+          {% for value, label in interest_mode_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+          {%endfor%}
+          </select>
+      </div>
+      <button type="button" onclick = "submitLoanForm(event)">Submit</button>
+ 
     </form>
-  {%endif %}
+
+    <script>
+      const submitLoanForm = async (e) => {
+        e.preventDefault(); 
+        const form = document.getElementById("addLoanForm")
+        const formData = new FormData(form); 
+
+        const response = await fetch("{% url 'server_add_loan' %}", {
+            method: "POST",
+            body: formData, 
+            headers : {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+
+        })
+
+        const data = await response.json();
+
+        console.log(data); 
+
+        if (data.status == 1) {
+            window.location.href = "{% url 'loan_list' %}"
+        }
+        
+    }
+
+    </script>
+
+  </body>
   
 </html>
 
-
-<!-- <form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="form-group">
-      <label for="{{ form.name.id_for_label }}">Name:</label>
-      {{ form.name }}
-  </div>
-  <div class="form-group">
-      <label for="{{ form.address.id_for_label }}">Address:</label>
-      {{ form.address }}
-  </div>
-  <div class="form-group">
-      <label for="{{ form.contact_no.id_for_label }}">Contact Number:</label>
-      {{ form.contact_no }}
-  </div>
-  <div class="form-group">
-      <label for="{{ form.billing_statement_electric.id_for_label }}">Billing Statement (Electric):</label>
-      {{ form.billing_statement_electric }}
-  </div>
-  <button type="submit">Upload</button>
-</form> -->

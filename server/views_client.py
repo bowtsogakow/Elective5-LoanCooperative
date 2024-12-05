@@ -15,9 +15,12 @@ def add_client(request):
     work_details = request.data.get("work_details")
     business = request.data.get("business")
     co_maker = request.data.get("co_maker")
-    billing_statement_electric = request.Files.get("billing_statement_electric")
-    billing_statement_water = request.Files.get("billing_statement_water")
+    billing_statement_electric = request.FILES.get("billing_statement_electric")
+    billing_statement_water = request.FILES.get("billing_statement_water")
     type = "client"
+
+    user = None 
+    client = None 
 
     if not first_name or not last_name or not middle_name or not address or not contact_no or not work_details or not business or not co_maker or not billing_statement_electric or not billing_statement_water:
         return Response({
@@ -35,17 +38,18 @@ def add_client(request):
     
     try : 
     
-        user = User.objects.create(
+        user = User(
             first_name = first_name,
             middle_name = middle_name,
             last_name = last_name,
             type = type
         )
 
-        co_maker_object = User.objects.filter(first_name = co_maker.split(" ")[0], middle_name = co_maker.split(" ")[1], last_name = co_maker.split(" ")[2], type = "client").first()
+        co_maker_object = User.objects.filter(full_name = co_maker).first()
+        print(co_maker_object)
         if user and co_maker_object: 
 
-            client = ClientInfo.objects.create(
+            client = ClientInfo(
                 user = user,
                 address = address,
                 contact_no = contact_no,
@@ -68,18 +72,21 @@ def add_client(request):
         
         if client : 
             client.delete()
-
         return Response({
             "status" : 0,
             "status_message" : "Something went wrong"
         })
 
+    print(7)    
+    user.save()
+    client.save()
+
+    
     return Response({
         "status" : 1,
         "status_message" : "Client added successfully",
         "client_id" : client.id 
     })
-
 
 @api_view(["GET"])
 def get_all_clients(request): 
@@ -89,9 +96,13 @@ def get_all_clients(request):
     response_json = []
     
     for client in clients : 
-        client = ClientInfo.objects.filter(user = client).first()
 
         if not client : 
+            continue
+        
+        info = ClientInfo.objects.filter(user = client).first()
+
+        if not info : 
             continue
         
         hasLoan = False
@@ -103,8 +114,8 @@ def get_all_clients(request):
         data = {
             "id" : client.id,
             "fullname" : client.full_name,
-            "contact_number" : client.contact_no,
-            "address" : client.address, 
+            "contact_number" : info.contact_no,
+            "address" : info.address, 
             "has_loan" : hasLoan
         } 
 
@@ -118,6 +129,7 @@ def get_all_clients(request):
 
 @api_view(["GET"])
 def get_client_by_id(request, client_id):
+    print(client_id)
     client = User.objects.filter(id = client_id, type = "client").first()
 
     if not client : 
@@ -136,8 +148,8 @@ def get_client_by_id(request, client_id):
             })
         
         data = {
-            "id" : clientInfo.id,
-            "fullname" : clientInfo.full_name,
+            "id" : client.id,
+            "fullname" : client.full_name,
             "contact_number" : clientInfo.contact_no,
             "address" : clientInfo.address, 
             "work_details" : clientInfo.work_details,

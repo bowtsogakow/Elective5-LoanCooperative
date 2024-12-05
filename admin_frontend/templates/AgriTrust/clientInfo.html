@@ -1,0 +1,27 @@
+<html>
+
+    {% include 'AgriTrust/import.html' %}
+    {% include 'AgriTrust/css.html' %}
+
+    <body> 
+        {% include 'AgriTrust/header.html' %}
+        <div class="client-info-div cont-body">
+
+        <a href = "{% url 'client_list' %}"> &lt; Back </a> <br><br>
+
+            <div class="cont">
+                <div class="client-info-cont">
+                    
+                    <h3> {{client.fullname}} </h3>
+            
+                    <p> Contact Number : {{client.contact_number}} </p>
+                    <p> Address : {{client.address}} </p>
+                    <p> Work Details : {{client.work_details}} </p>
+                    <p> Business : {{client.business}} </p>
+                    <p> Co Maker : {{client.co_maker}} </p>
+                </div>
+            </div>
+
+        </div>
+    </body>
+<html>
