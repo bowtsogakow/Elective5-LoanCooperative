@@ -48,6 +48,18 @@
                 <form method="POST" id = "addClientForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="client-input-div">
+                        <label class="label" for="email">Email:</label>
+                        <input class="input" id="email" name="email" required>
+                    </div>
+                    <div class="client-input-div">
+                        <label class="label" for="username">Username:</label>
+                        <input class="input" id="username" name="username" required>
+                    </div>
+                    <div class="client-input-div">
+                        <label class="label" for="password">Password:</label>
+                        <input class="input" id="password" name="password" required>
+                    </div>
+                    <div class="client-input-div">
                         <label class="label" for="first_name">First Name:</label>
                         <input class="input" id="first_name" name="first_name" required>
                     </div>
@@ -68,16 +80,18 @@
                         <input type="text" id="contact_no" name="contact_no" required>
                     </div>
                     <div class="client-input-div">
-                        <label for="work_details">Work Details:</label>
-                        <textarea id="work_details" name="work_details" rows="4" cols="50" required></textarea>
-                    </div>
-                    <div class="client-input-div">
                         <label for="business">Business:</label>
                         <input type="text" id="business" name="business" required>
                     </div>
                     <div class="client-input-div">
                         <label for="co_maker">Co-Maker:</label>
-                        <input type="text" id="co_maker" name="co_maker" required>
+                        <!-- <input type="text" id="co_maker" name="co_maker" required> -->
+                        <select name = "co_maker">
+                            <option value="">Select Co-Maker</option>
+                            {% for co_maker in comakers %}
+                                <option value = "{{ co_maker.fullname }}">{{ co_maker.fullname }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="client-input-div">
                         <label for="billing_statement_electric">Billing Statement (Electric):</label>

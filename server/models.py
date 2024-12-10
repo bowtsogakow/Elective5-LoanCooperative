@@ -8,6 +8,7 @@ class User(AbstractUser):
     middle_name = models.CharField(max_length=255, blank=True, null=True)
     type = models.CharField(max_length=255, default=" ", null=True, blank=True, choices=[("admin", "admin"), ("client", "client"), ("cashier", "cashier")])
     full_name = models.CharField(max_length=255, null=True, blank=True)
+    has_loan = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.first_name and self.last_name:
@@ -21,12 +22,10 @@ class User(AbstractUser):
             return f"<{self.id}> {self.username}"
 
 
-
 class ClientInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ClientInfos")
     address = models.TextField()
     contact_no = models.CharField(max_length=20)
-    work_details = models.TextField(null=True, blank=True)
     business = models.CharField(max_length=200, null=True, blank=True)  # Self-employed business name
     co_maker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="co_maker_clients")
     billing_statement_electric = models.ImageField(upload_to='billing_statements/', null=True, blank=True)
@@ -37,7 +36,12 @@ class ClientInfo(models.Model):
             return f"<{self.id}> {self.user.full_name}"
         return f"<{self.id}> {self.user.username}"
     
-# models.py
+    def delete(self):
+        self.billing_statement_electric.delete()
+        self.billing_statement_water.delete()
+        super().delete()
+    
+
 class Loan(models.Model):
     LOAN_TERMS = [(3, '3 months'), (6, '6 months'), (9, '9 months'), (12, '12 months')]
     INTEREST_MODE_CHOICES = [('Add-on', 'Add-on'), ('Less', 'Less')]
@@ -66,43 +70,28 @@ class Loan(models.Model):
     def compute_and_save(self, *args, **kwargs):
         random_code = generate_random_string()
         # Calculate interest and total before saving the loan
-        print(1)
         temp = (self.amount_loaned * self.interest_percentage) / 100
         self.interest = temp * float(self.loan_term)
         self.processing_fee = self.amount_loaned * 0.02
-        print(2)
         if self.interest_mode == "Add-on":
             self.total = self.amount_loaned + self.interest
         elif self.interest_mode == "Less":
             self.total = self.amount_loaned - self.interest
         else: 
             return None  # Invalid interest mode
-        print(3)
+
         self.total = self.total + self.processing_fee
-        print(4)
         self.days_total = float(self.loan_term) * 30
-        print("days total", self.days_total)
         self.days_paid = 0
-        print(5)
         self.daily_payment = self.total / (float(self.loan_term) * 30)  # Assuming 30 days per month for simplicity
         self.qr_code = random_code
         self.status = "ongoing"
         self.total_payed = 0
         self.date_created = datetime.now().date()
         self.date_end = datetime.now().date() + timedelta(days=float(self.loan_term) * 30)
-        print(6)
-
-        print(self.amount_loaned)
-        print(self.interest_percentage)
-        print(self.loan_term)
-        print(self.interest_mode)
-        print(self.interest)
-        print(self.processing_fee)
-        print(self.total)
-        print(self.days_total)
-        print(self.days_paid)
-        print(self.daily_payment)
-        print(self.total_payed)
+        
+        self.client.has_loan = True
+        self.client.save()
 
         super(Loan, self).save(*args, **kwargs)
 
@@ -112,17 +101,20 @@ class Loan(models.Model):
 
 class Payment(models.Model):
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name="payments")
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.DecimalField(max_digits=12, decimal_places=2,)
     date = models.DateField(default=datetime.now().date())
 
     def update_loan_and_save(self, *args, **kwargs): 
+        self.amount = self.loan.daily_payment
         self.loan.total_amount_paid += self.amount
         self.date = datetime.now().date()
+        self.loan.days_paid += 1
 
         if self.loan.total_amount_paid >= self.loan.total:
             self.loan.status = "completed"
             self.loan.date_paid = datetime.now().date()
-
+            self.loan.client.has_loan = False
+           
         self.loan.save()
 
         super.save(*args, **kwargs)

@@ -27,7 +27,7 @@ def generate_qr_code(data):
     return img_base64
 
 
-def generate_random_string(length=9):
+def generate_random_string(length=8):
     # Generate a random string of the specified length
     characters = string.ascii_letters + string.digits  # Choose the characters you want
     random_string = ''.join(random.choice(characters) for _ in range(length))

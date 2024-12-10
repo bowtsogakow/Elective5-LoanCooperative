@@ -23,5 +23,27 @@
         <p> {{ loan.daily_payment }} </p>
         <p> {{ loan.days_left }} </p>
 
+        <!-- Payments table -->
+        <div>
+            <h3> Payments History </h3> 
+            
+            <table>
+                <tr >
+                    <th> ID </th>
+                    <th> Amount </th>
+                    <th> Date </th>
+                </tr>
+
+                {%for payment in payments%}
+                    <tr>
+                        <td> {{payment.id}} </td>
+                        <td> {{payment.amount}} </td>
+                        <td> {{payment.date}} </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        
+        </div>
+
     </body>
 </html>

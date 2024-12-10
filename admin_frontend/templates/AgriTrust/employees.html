@@ -1,0 +1,46 @@
+<html>
+
+    {% include 'AgriTrust/import.html' %}
+    {% include 'AgriTrust/css.html' %}
+
+    <body> 
+        {% include 'AgriTrust/header.html' %}
+
+        <div>
+        
+            <h5> Employees </h5>
+
+            <div>
+                <div>
+
+                    <div>
+                        <!-- <button onclick="window.location.href='{% url 'client_add' %}';"> Add Client </button>  -->
+                    </div>
+                    
+                    <div>
+                        <table> 
+                            <tr> 
+                                <th> ID </th>
+                                <th> Fullname </th>
+                                <th> Email </th>
+                                <th> Username </th>
+                                <th> Type </th>
+                            </tr>
+
+                            {%for employee in employees%}
+                            <tr >
+                                <td> {{employee.id}} </td>
+                                <td> {{employee.fullname}} </td>
+                                <td> {{employee.email}} </td>
+                                <td> {{employee.username}} </td>
+                                <td> {{employee.type}}} </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </body>
+<html>

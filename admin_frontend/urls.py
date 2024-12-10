@@ -16,6 +16,9 @@ urlpatterns = [
   path("loans", views.loan_list_page, name="loan_list"),
   path("loans/add", views.add_loan_page, name="loan_add"),
   path("loans/<int:id>", views.loan_info_page, name="loan_info"),
+
+  # employee
+  path("employees", views.employee_page, name="employee_list"),
   
   
   

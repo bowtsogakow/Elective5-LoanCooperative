@@ -123,3 +123,40 @@ def get_loan_by_id(request, loan_id):
         "status_message" : "Loan retrieved successfully",
         "loan" : data
     })
+
+
+@api_view(["GET"])
+def get_loan_list_by_client(request, client_id): 
+    client = User.objects.filter(id = client_id).first()
+
+    print(client)
+
+    if not client : 
+        return Response({
+            "status" : 0,
+            "status_message" : "Client not found"
+        })
+    
+    loans = Loan.objects.filter(client = client)
+
+    response = []
+
+    for loan in loans : 
+        data = {
+            "id" : loan.id,
+            "amount" : loan.amount_loaned, 
+            "interest_percentage" : loan.interest_percentage,
+            "loan_term" : loan.loan_term,
+            "total" : loan.total,
+            "status" : loan.status, 
+            "date_created" : loan.date_created,
+            "date_end" : loan.date_end,
+        }
+
+        response.append(data)
+
+    return Response({
+        "status" : 1,   
+        "status_message" : "Loans retrieved successfully",
+        "loans" : response
+    })

@@ -22,6 +22,60 @@
                 </div>
             </div>
 
+            <!-- loan info table  -->
+            <div>
+                <h3> Loan History </h3> 
+                
+                <table>
+                    <tr >
+                        <th> Loan ID </th>
+                        <th> Amount </th>
+                        <th> Interest Percentage </th>
+                        <th> Loan Term </th>
+                        <th> Total </th>
+                        <th> Date Created </th>
+                        <th> Date End </th>
+                        <th> Status </th>
+                    </tr>
+
+                    {%for loan in loans%}
+                        <tr onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
+                            <td> {{loan.id}} </td>
+                            <td> {{loan.amount}} </td>
+                            <td> {{loan.interest_percentage}} </td>
+                            <td> {{loan.loan_term}} </td>
+                            <td> {{loan.total}} </td>
+                            <td> {{loan.date_created}} </td>
+                            <td> {{loan.date_end}} </td>
+                            <td> {{loan.status}} </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            
+            </div>
+
+            <!-- Payments table -->
+            <div>
+                <h3> Payments History </h3> 
+                
+                <table>
+                    <tr >
+                        <th> ID </th>
+                        <th> Amount </th>
+                        <th> Date </th>
+                    </tr>
+
+                    {%for payment in payments%}
+                        <tr>
+                            <td> {{payment.id}} </td>
+                            <td> {{payment.amount}} </td>
+                            <td> {{payment.date}} </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            
+            </div>
+
         </div>
     </body>
 <html>

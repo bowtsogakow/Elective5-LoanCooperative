@@ -1,18 +1,21 @@
 from .models import ClientInfo, Loan, User
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from django.db.models import Q
+import math
 
 
 # Not yet Tested
 @api_view(["POST"])
 def add_client(request): 
+    email = request.data.get("email")
+    username = request.data.get("username")
+    password = request.data.get("password")
     first_name = request.data.get("first_name")
     middle_name = request.data.get("middle_name")
     last_name = request.data.get("last_name")
     address = request.data.get("address")
     contact_no = request.data.get("contact_no")
-    work_details = request.data.get("work_details")
     business = request.data.get("business")
     co_maker = request.data.get("co_maker")
     billing_statement_electric = request.FILES.get("billing_statement_electric")
@@ -22,7 +25,7 @@ def add_client(request):
     user = None 
     client = None 
 
-    if not first_name or not last_name or not middle_name or not address or not contact_no or not work_details or not business or not co_maker or not billing_statement_electric or not billing_statement_water:
+    if not email or not username or not password or not first_name or not last_name or not middle_name or not address or not contact_no or not business or not co_maker or not billing_statement_electric or not billing_statement_water:
         return Response({
             "status" : 0,
             "status_message" : "Missing invalid input"
@@ -39,6 +42,9 @@ def add_client(request):
     try : 
     
         user = User(
+            email = email,
+            username = username,
+            password = password,
             first_name = first_name,
             middle_name = middle_name,
             last_name = last_name,
@@ -53,7 +59,6 @@ def add_client(request):
                 user = user,
                 address = address,
                 contact_no = contact_no,
-                work_details = work_details,
                 business = business,
                 co_maker = co_maker_object,
                 billing_statement_electric = billing_statement_electric,
@@ -91,7 +96,7 @@ def add_client(request):
 @api_view(["GET"])
 def get_all_clients(request): 
     
-    clients = User.objects.filter(type = "client")
+    clients = User.objects.filter(type = "client", is_active = True)
 
     response_json = []
     
@@ -105,18 +110,12 @@ def get_all_clients(request):
         if not info : 
             continue
         
-        hasLoan = False
-        loan = Loan.objects.filter(client = client).first()
-        if loan : 
-            if loan.status == "ongoing" :
-                hasLoan = True
-        
         data = {
             "id" : client.id,
             "fullname" : client.full_name,
             "contact_number" : info.contact_no,
             "address" : info.address, 
-            "has_loan" : hasLoan
+            "has_loan" : client.has_loan
         } 
 
         response_json.append(data)
@@ -130,7 +129,7 @@ def get_all_clients(request):
 @api_view(["GET"])
 def get_client_by_id(request, client_id):
     print(client_id)
-    client = User.objects.filter(id = client_id, type = "client").first()
+    client = User.objects.filter(id = client_id, type = "client", is_active = True).first()
 
     if not client : 
         return Response({
@@ -151,10 +150,10 @@ def get_client_by_id(request, client_id):
             "id" : client.id,
             "fullname" : client.full_name,
             "contact_number" : clientInfo.contact_no,
+            "has_loan" : client.has_loan,
             "address" : clientInfo.address, 
-            "work_details" : clientInfo.work_details,
             "business" : clientInfo.business,
-            "co_maker" : clientInfo.co_maker.full_name,
+            "co_maker" : clientInfo.co_maker.full_name if clientInfo.co_maker else None,
             "billing_statement_electric" : clientInfo.billing_statement_electric.url,
             "billing_statement_water" : clientInfo.billing_statement_water.url
         } 
@@ -164,3 +163,107 @@ def get_client_by_id(request, client_id):
             "status_message" : "Success",
             "client" : data
         })
+    
+@api_view(["POST"])
+def get_clients_by_search(request):
+    name = request.data.get("name", None)
+    loan_status = request.data.get("loan_status")
+    pagination = request.data.get("pagination")
+    limit = 25
+
+    if not loan_status: 
+        return Response({
+            "status" : 0, 
+            "status_message" : "Invalid Input"
+        })
+    
+    
+    conditions = Q()
+
+    conditions &= Q(type = "client", is_active = True)
+    
+    if name : 
+        conditions &= Q(full_name__icontains = name.strip())
+
+    if loan_status == "has-loan": 
+        conditions &= Q(has_loan = True)
+    
+    elif loan_status == "has-no-loan": 
+        conditions &= Q(has_loan = False) 
+
+    clients = User.objects.filter(conditions).prefetch_related("ClientInfos")
+    total_count = clients.count()
+    total_page = total_count/limit
+
+    if total_page % 1 != 0:
+        total_page = math.floor(total_page)
+        total_page += 1
+
+    if pagination :
+        included = int(pagination) * limit
+
+    else :
+        pagination = 1 
+        included = limit
+    
+    print(type(included))
+    print(type(pagination))
+
+    response = []
+
+    i = 1 
+    number_display = 1
+    for client in clients :
+        if  included - limit < i <= included :
+        
+            clientInfo = client.ClientInfos.first()
+
+            if not clientInfo : 
+                continue
+
+            data = {
+                "id" : client.id,
+                "number_display" : number_display,
+                "fullname" : client.full_name,
+                "contact_number" : clientInfo.contact_no,
+                "address" : clientInfo.address, 
+                "has_loan" : client.has_loan
+            }
+            number_display += 1 
+            response.append(data)
+
+        i += 1
+
+    return Response({
+        "status" : 1,
+        "status_message" : "Success",
+        "clients" : response,
+        "pagination" : pagination,
+        "total_page" : total_page
+    })
+
+
+    
+@api_view(["POST"])
+def delete_client(request) :
+    ids = request.data.get("client_ids")
+
+    if type(ids) is not list :
+        return Response({
+            "status" : 0,
+            "status_message" : "Invalid input"
+        })
+    
+    for id in ids :
+        client = User.objects.filter(id = id, type = "client").prefetch_related("ClientInfos").first()
+        
+        if not client :
+            continue
+            
+        client.ClientInfos.first().delete()
+        client.delete()
+
+    return Response({
+        "status" : 1,
+        "status_message" : "Clients deleted successfully"
+    })
