@@ -88,7 +88,7 @@ def add_loan_page(request):
     {"loan_terms_choices" : loan_terms_choices, 
      "interest_mode_choices" : interest_mode_choices})
 
-def employee_page(request):
+def employee_list_page(request):
   path = reverse('server_get_all_employees')
   url = f"{base_url}{path}"
   response = requests.get(url)
@@ -96,7 +96,10 @@ def employee_page(request):
 
   return render(request, 'AgriTrust/employees.html', {"employees" : data["employees"]})
 
-def user_page(request): 
+def add_employee_page(request):
+  return render(request, 'AgriTrust/registerEmployee.html')
+
+def profile_page(request): 
   return None
 
 

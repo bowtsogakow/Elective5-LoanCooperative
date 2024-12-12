@@ -18,7 +18,11 @@ urlpatterns = [
   path("loans/<int:id>", views.loan_info_page, name="loan_info"),
 
   # employee
-  path("employees", views.employee_page, name="employee_list"),
+  path("employees", views.employee_list_page, name="employee_list"),
+  path("employees/add", views.add_employee_page, name = "employee_add"),
+
+  # profile page 
+  path("profile", views.profile_page, name = "profile_info"),
   
   
   

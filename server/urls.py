@@ -4,8 +4,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     # authentication 
-    path("login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path("login", views_auth.server_login, name="server_login"),
+    
 
     # client
     path("add_client", views_client.add_client, name="server_add_client"),
@@ -28,4 +28,5 @@ urlpatterns = [
 
     #employee
     path("get_all_employees", views_employees.get_all_employees, name="server_get_all_employees"),
+    path("add_employee", views_employees.add_employee, name = "server_add_employee")
 ]
