@@ -64,8 +64,6 @@
                             <option value="has-loan"> Has Loan </option>
                             <option value="has-no-loan"> Has No Loan </option>
                         </select>
-
-                       
                     </div>
                     
                     <div>
@@ -116,6 +114,7 @@
                 document.querySelectorAll(".client-row").forEach(row => {
                     totalRows++; 
                 })
+                console.log(selectedIds);
             }
 
             function setSelectedMarker(){
@@ -125,7 +124,7 @@
             function handleCheckboxClick(){
 
                 document.querySelectorAll(".client-row").forEach(row => {
-                    var client_id = row.children[1].textContent;
+                    var client_id = row.children[0].children[0].value;
                     if (row.children[0].children[0].checked == true) {
 
                         if(selectedIds.includes(client_id) == false){

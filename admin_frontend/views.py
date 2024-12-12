@@ -8,23 +8,24 @@ from django.urls import reverse
 import requests
 from .configurations import base_url
 from server.models import Loan
-
+from server.decorators import admin_required
 
 # dashboard 
-# 
+
+@admin_required
 def index(request):
   return render(request, 'AgriTrust/index.html')
 
 # clients 
+@admin_required
 def client_list_page(request): 
   path = reverse('server_get_client_by_search')
-  # path = reverse('server_get_all_clients')
   url = f"{base_url}{path}"
   response = requests.post(url, data={"pagination" : 1, "loan_status" : "both"})
-  # response = requests.get(url)
   data = response.json()
   return render(request, 'AgriTrust/clients.html', {"clients" : data["clients"]})
 
+@admin_required
 def client_info_page(request, id): 
   path_client_info = reverse('server_get_client_by_id', args=[id])
   url_client_info = f"{base_url}{path_client_info}"
@@ -46,7 +47,8 @@ def client_info_page(request, id):
     "loans" : data_get_loan_by_client["loans"],
     "payments" : data_get_payment_by_client["payments"]
   })
-  
+
+@admin_required
 def add_client_page(request): 
   path = reverse('server_get_all_clients')
   url = f"{base_url}{path}"
@@ -56,6 +58,7 @@ def add_client_page(request):
     "comakers" : data["clients"]
   })
 
+@admin_required
 def loan_list_page(request): 
   path = reverse('server_get_all_loans')
   url = f"{base_url}{path}"
@@ -63,6 +66,7 @@ def loan_list_page(request):
   data = response.json()
   return render(request, 'AgriTrust/loans.html', {"loans" : data["loans"]})
 
+@admin_required
 def loan_info_page(request, id): 
   path_loan_info = reverse('server_get_loan_by_id', args=[id])
   url_loan_info = f"{base_url}{path_loan_info}"
@@ -80,6 +84,7 @@ def loan_info_page(request, id):
     
     })
 
+@admin_required
 def add_loan_page(request):
   
   loan_terms_choices = Loan.LOAN_TERMS
@@ -88,17 +93,19 @@ def add_loan_page(request):
     {"loan_terms_choices" : loan_terms_choices, 
      "interest_mode_choices" : interest_mode_choices})
 
+@admin_required
 def employee_list_page(request):
-  path = reverse('server_get_all_employees')
+  path = reverse('server_get_employee_by_search')
   url = f"{base_url}{path}"
-  response = requests.get(url)
+  response = requests.post(url, data={"pagination" : 1, "type" : "all"})
   data = response.json()
-
   return render(request, 'AgriTrust/employees.html', {"employees" : data["employees"]})
 
+@admin_required
 def add_employee_page(request):
   return render(request, 'AgriTrust/registerEmployee.html')
 
+@admin_required
 def profile_page(request): 
   return None
 

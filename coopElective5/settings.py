@@ -141,10 +141,9 @@ SIMPLE_JWT = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # Default backend for Django auth system
+    'django.contrib.auth.backends.ModelBackend',  
 ]
 
-# Default session authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -154,3 +153,6 @@ REST_FRAMEWORK = {
 # CSRF protection is enabled by default
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 10800  
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  
+SESSION_SAVE_EVERY_REQUEST = True 

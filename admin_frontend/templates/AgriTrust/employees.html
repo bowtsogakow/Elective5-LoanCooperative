@@ -16,9 +16,21 @@
                     <div>
                         <button onclick="window.location.href='{% url 'employee_add' %}';"> Add Employee </button> 
                     </div>
+
+                    <div>
+                        <input type="text" oninput="handleSearchEmployee()" id="search-employee" placeholder="Search Employee"> 
+                    </div>
+
+                    <div>
+                        <select id = "type-select" oninput="handleSearchEmployee()"> 
+                            <option value="all"> All </option>
+                            <option value="admin"> Admin </option>
+                            <option value="cashier"> Cashier </option>
+                        </select>
+                    </div>
                     
                     <div>
-                        <table class = "table table-bordered table-hover table-responsive"> 
+                        <table id = "employee-table" class = "table table-bordered table-hover table-responsive"> 
                             <tr> 
                                 <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
                                 <th> ID </th>
@@ -30,8 +42,8 @@
 
                             {%for employee in employees%}
                             <tr class = "employee-row">
-                                <td> <input type="checkbox" id = "select-row" onclick="handleCheckboxClick()"> </td>
-                                <td> {{employee.id}} </td>
+                                <td> <input type="checkbox" id = "select-row" onclick="handleCheckboxClick()" value = "{{employee.id}}"> </td>
+                                <td> {{employee.number_display}} </td>
                                 <td> {{employee.fullname}} </td>
                                 <td> {{employee.email}} </td>
                                 <td> {{employee.username}} </td>
@@ -44,7 +56,7 @@
                     <div>
                         <p id = "selected-indicator"> </p>
                         <div > 
-                            <button onclick="handleDeleteClients()"> Delete Selected Employee </button> 
+                            <button onclick="handleDeleteEmployees()"> Delete Selected Employee </button> 
                         </div>
                     </div>
                     
@@ -71,7 +83,7 @@
             function handleCheckboxClick(){
 
                 document.querySelectorAll(".employee-row").forEach(row => {
-                    var client_id = row.children[1].textContent;
+                    var client_id = row.children[0].children[0].value;
                     if (row.children[0].children[0].checked == true) {
 
                         if(selectedIds.includes(client_id) == false){
@@ -122,74 +134,71 @@
             //     return window.location.href = 'clients/' + clientId;
             // }
 
-            // async function handleDeleteClients() {
+            async function handleDeleteEmployees() {
                 
-            //     const response = await fetch("{% url 'server_delete_client' %}", {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //             'X-CSRFToken': '{{ csrf_token }}'
-            //         },
-            //         body: JSON.stringify({
-            //             'client_ids': selectedIds
-            //         })
-            //     })
+                const response = await fetch("{% url 'server_delete_employee' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        'employee_ids': selectedIds
+                    })
+                })
 
-            //     await response.json();
+                await response.json();
 
-            //     return window.location.href = "{% url 'client_list' %}";
+                return window.location.href = "{% url 'employee_list' %}";
 
-            // }
+            }
             
-            // async function handleSearchClient() {
+            async function handleSearchEmployee() {
                 
-            //     const response = await fetch("{% url 'server_get_client_by_search' %}", {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //             'X-CSRFToken': '{{ csrf_token }}'
-            //         },
-            //         body: JSON.stringify({
-            //             'name': document.getElementById("search-client").value,
-            //             'pagination' : 1, 
-            //             'loan_status' : document.getElementById("has-loan-select").value
-            //         })
-            //     })    
+                const response = await fetch("{% url 'server_get_employee_by_search' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        'name': document.getElementById("search-employee").value,
+                        'pagination' : 1, 
+                        'type' : document.getElementById("type-select").value
+                    })
+                })    
 
-            //     const data = await response.json();
-            //     console.log(data);
-            //     const clients = data["clients"];
+                const data = await response.json();
+                console.log(data);
+                const employees = data["employees"];
                 
-            //     var table_body = document.getElementById("client-table-body");
-            //     table_body.innerHTML = "";
+                var table_body = document.getElementById("employee-table");
+                table_body.innerHTML = "";
                 
-            //     table_body.innerHTML += `
-            //         <tr>
-            //             <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
-            //             <th> ID </th>
-            //             <th>Client Name</th>
-            //             <th> Contact Number </th>
-            //             <th> Address </th>
-            //             <th> Has Loan </th>
-            //         </tr>
-            //     `
+                table_body.innerHTML += `
+                    <tr>
+                        <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
+                        <th> ID </th>
+                        <th> Fullname </th>
+                        <th> Email </th>
+                        <th> Username </th>
+                        <th> Type </th>
+                    </tr>
+                `
 
-            //     for (client of clients) {
-            //         table_body.innerHTML += `
-            //         <tr 
-            //             class="client-row"
-            //             onclick='redirectToClientInfo(event, ${client.id})'
-            //         >   
-            //             <td> <input type="checkbox" name="client_ids" value="${client.id}" onclick="handleCheckboxClick()"> </td>
-            //             <td> ${client.number_display} </td>
-            //             <td class="client-name"> ${client.fullname} </td>
-            //             <td> ${client.contact_number} </td>
-            //             <td> ${client.address} </td>
-            //             <td> ${client.has_loan} </td>
-            //         </tr>
-            //         `
-            //     }
-            // }
+                for (employee of employees) {
+                    table_body.innerHTML += `
+                    <tr class = "employee-row">
+                        <td> <input type="checkbox" id = "select-row" onclick="handleCheckboxClick()"> </td>
+                        <td> ${employee.number_display} </td>
+                        <td> ${employee.fullname} </td>
+                        <td> ${employee.email} </td>
+                        <td> ${employee.username} </td>
+                        <td> ${employee.type} </td>
+                    </tr>
+                    `
+                }
+            }
 
             getTotalRows();
             setSelectedMarker();

@@ -20,36 +20,33 @@ def server_login(request):
         })
      
     user = authenticate(request, username=username, password=password)
-    print(user.type)
-    print(type)
-
+    
     if not user : 
         return Response({
             "status" : 0, 
             "status_message" : "Invalid credentials"
         })
     
-    if type == "admin" and user.type == "admin" : 
-        login(http_request, user)
-        # redirect('admin_index')
-        return Response({
-            "status" : 1, 
-            "status_message" : "Logged in as admin"
-        })
-    
-    if type == "cashier" and user.type == "cashier" : 
-        login(http_request, user)
-        return Response({
-            "status" : 1, 
-            "status_message" : "Logged in as cashier"
-        })
-    
-    
     if type == "client" and user.type == "client" : 
         login(http_request, user)
         return Response({
             "status" : 1, 
             "status_message" : "Logged in as client"
+        })
+
+    
+    if type == "cashier" and user.type == "cashier" : 
+        login(http_request, user)
+        return Response({
+            "status" : 2, 
+            "status_message" : "Logged in as cashier"
+        })
+    
+    if type == "admin" and user.type == "admin" : 
+        login(http_request, user)
+        return Response({
+            "status" : 3, 
+            "status_message" : "Logged in as admin"
         })
 
     return Response({

@@ -28,8 +28,11 @@
 
             const data = await response.json()
 
-            console.log(data)
+            const login_status = data.status;
 
+            if(login_status == 3){
+                window.location.href = "{% url 'admin_index' %}"
+            }
         }
 
       
