@@ -63,7 +63,7 @@ class Loan(models.Model):
 
     date_created = models.DateField(default=datetime.now().date())
     date_end = models.DateField(null=True, blank=True)
-    date_paid = models.DateField(null=True, )
+    date_paid = models.DateField(null=True, blank=True)
     status = models.CharField(default="ongoing", max_length=10, choices=[("ongoing", "ongoing"), ("completed", "completed")])
     qr_code = models.CharField(max_length=8, null=True, blank=True)  
 

@@ -1,9 +1,11 @@
 import datetime
+import math
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from django.db.models import Q
 from server.models import Loan, User
+from django.db.models import F
 
 
 @api_view(["POST"])
@@ -66,18 +68,21 @@ def get_all_loans(request):
     for loan in loans :
         
         days_passed = (datetime.date.today() - loan.date_created).days
-        payment_position = days_passed - loan.days_paid
+        payment_position = loan.days_paid - days_passed
 
         data = {
             "id" : loan.id,
             "client_name" : loan.client.full_name,
-            "amount" : loan.amount_loaned, 
+            "amount_loaned" : loan.amount_loaned, 
+            "total_amount" : loan.total,
             "status" : loan.status, 
+            "remaining_balance" : loan.total - loan.total_amount_paid,  
             "start_date" : loan.date_created,
             "end_date" : loan.date_end,
             "daily_payment" : loan.daily_payment, 
             "days_left" : loan.days_total - loan.days_paid, 
-            "payment_position" : payment_position
+            "payment_position" : payment_position, 
+
         }
 
         response.append(data)
@@ -193,3 +198,149 @@ def get_loan_by_code(request):
         "status_message" : "Loan retrieved successfully",
         "loan" : data
     })
+
+
+@api_view(["POST"])
+def get_loans_by_search(request):
+    name = request.data.get("name")
+    sort = request.data.get("sort")
+    order = request.data.get("order")
+    status = request.data.get("status")
+    pagination = request.data.get("pagination")
+    limit = 25
+
+    if not sort : 
+        sort = "client_name"
+
+    if not order: 
+        order = "asc"
+
+    if not status : 
+        status = "all"
+
+    conditions = Q()
+
+    if name: 
+        conditions &= Q(client__full_name__icontains = name.strip())
+
+    if status == "ongoing":
+        conditions &= Q(status = "ongoing")
+
+    elif status == "completed":
+        conditions &= Q(status = "completed")
+
+    if order == "asc" : 
+
+        if sort == "client_name":
+            order_by = "client__full_name"
+        
+        elif sort == "amount_loaned": 
+            order_by = "amount_loaned"
+
+        elif sort == "total_amount":
+            order_by = "total"
+
+        elif sort == "start_date": 
+            order_by = "date_created"
+
+        elif sort == "end_date": 
+            order_by = "date_end"
+
+        elif sort == "daily_payment": 
+            order_by = "daily_payment"
+
+        elif sort == "days_left": 
+            order_by = "days_total"
+
+        elif sort == "payment_position":
+            current_date = datetime.date.today()
+            order_by = F('days_paid') - (current_date - F('date_created'))
+
+    elif order == "desc" : 
+
+        if sort == "client_name":
+            order_by = "-client__full_name"
+        
+        elif sort == "amount_loaned": 
+            order_by = "-amount_loaned"
+
+        elif sort == "total_amount":
+            order_by = "-total"
+
+        elif sort == "start_date": 
+            order_by = "-date_created"
+
+        elif sort == "end_date": 
+            order_by = "-date_end"
+
+        elif sort == "daily_payment": 
+            order_by = "-daily_payment"
+
+        elif sort == "days_left": 
+            order_by = "-days_total"
+
+        elif sort == "payment_position":
+            current_date = datetime.date.today()
+            order_by = (current_date - F('date_created')) - F('days_paid')
+
+      
+    loans = Loan.objects.filter(conditions).order_by(order_by)
+
+    total_count = loans.count()
+    total_page = total_count/limit
+
+    if total_page % 1 != 0:
+        total_page = math.floor(total_page)
+        total_page += 1
+
+    if pagination :
+        included = int(pagination) * limit
+
+    else :
+        pagination = 1 
+        included = limit
+
+    response = []
+
+    i = 1 
+    number_display = 1
+
+    for loan in loans : 
+        if included - limit < i <= included :
+
+            
+            days_passed = (datetime.date.today() - loan.date_created).days
+            payment_position = loan.days_paid - days_passed
+
+            data = {
+                "id" : loan.id,
+                "number_display" : number_display,
+                "client_name" : loan.client.full_name,
+                "amount_loaned" : loan.amount_loaned, 
+                "total_amount" : loan.total,
+                "status" : loan.status, 
+                "remaining_balance" : loan.total - loan.total_amount_paid,  
+                "start_date" : loan.date_created,
+                "end_date" : loan.date_end,
+                "daily_payment" : loan.daily_payment, 
+                "days_left" : loan.days_total - loan.days_paid, 
+                "payment_position" : payment_position, 
+
+            }
+            number_display += 1
+            response.append(data)
+
+        i += 1
+
+    return Response({
+        "status" : 1,   
+        "status_message" : "Loans retrieved successfully",
+        "loans" : response,
+        "pagination" : pagination,
+        "total_page" : total_page,
+    })
+
+    
+    
+
+    

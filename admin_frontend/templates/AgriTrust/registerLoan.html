@@ -6,10 +6,18 @@
     
     <form method="POST" id = "addLoanForm">
       {% csrf_token %}
+      
       <div>
           <label for="client_id">Client Name:</label> 
-          <input type="text" id="client_id" name="client_id" required>
+          <input list="options" id="client_id" name="client_id" placeholder="Search Client">
+
+          <datalist id="options">
+            {% for client in clients %}
+              <option value="{{client.id}}"> {{client.fullname}}</option>
+            {%endfor%}
+          </datalist>
       </div>
+
       <div>
           <label for="loan_term">Loan Term:</label>
           <select id="loan_term" name="loan_term" required>

@@ -60,9 +60,9 @@ def add_client_page(request):
 
 @admin_required
 def loan_list_page(request): 
-  path = reverse('server_get_all_loans')
+  path = reverse('server_get_loans_by_search')
   url = f"{base_url}{path}"
-  response = requests.get(url)
+  response = requests.post(url)
   data = response.json()
   return render(request, 'AgriTrust/loans.html', {"loans" : data["loans"]})
 
@@ -86,12 +86,17 @@ def loan_info_page(request, id):
 
 @admin_required
 def add_loan_page(request):
-  
+  path = reverse('server_get_eligible_clients_for_loan')
+  url = f"{base_url}{path}"
+  response = requests.get(url)
+  data = response.json()
+
   loan_terms_choices = Loan.LOAN_TERMS
   interest_mode_choices = Loan.INTEREST_MODE_CHOICES
   return render(request, 'AgriTrust/registerLoan.html', 
     {"loan_terms_choices" : loan_terms_choices, 
-     "interest_mode_choices" : interest_mode_choices})
+     "interest_mode_choices" : interest_mode_choices, 
+     "clients" : data["clients"]})
 
 @admin_required
 def employee_list_page(request):
