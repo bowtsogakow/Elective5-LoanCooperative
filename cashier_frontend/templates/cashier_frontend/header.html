@@ -43,15 +43,12 @@
         <div class="header-div">
             <div class="header-title"> Agri<span>Trust</span> </div>
             <div class="header-nav">
-                <a href = "{% url 'admin_index' %}"> Home </a>
-                <a href = "{% url 'client_list' %}"> Clients </a>
-                <a href = "{% url 'loan_list' %}"> Loans </a>
-                <a href = "{% url 'employee_list' %}"> Employees </a>
-                <a href = "{% url 'profile_info' user.id%}"> {{user.full_name}} </a>
+                <a href = "{% url 'cashier_index' %}"> Home </a>
+                <a href = "{% url 'cashier_profile_info' user.id%}"> {{user.full_name}} </a>
                 <a href = "{% url 'server_logout' %}"> Logout </a>
             </div>
         </div>
-    
+
         
     </header>
 </main>

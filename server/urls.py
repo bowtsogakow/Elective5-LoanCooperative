@@ -1,11 +1,12 @@
 from django.urls import path
 from server import views_loan, views_client, views_payment, views_auth, views_employees
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     # authentication 
     path("login", views_auth.server_login, name="server_login"),
-    
+    path("logout", views_auth.server_logout, name="server_logout"),
 
     # client
     path("add_client", views_client.add_client, name="server_add_client"),

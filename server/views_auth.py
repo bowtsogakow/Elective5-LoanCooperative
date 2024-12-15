@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.contrib.auth import logout
 
 @api_view(["POST"])
 def server_login(request):
@@ -56,4 +57,6 @@ def server_login(request):
         "status_message" : "Failed to login user"
     })
     
-              
+def server_logout(request):
+    logout(request)  # Log the user out
+    return redirect('login_page')
