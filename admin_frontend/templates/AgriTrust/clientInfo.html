@@ -3,6 +3,43 @@
     {% include 'AgriTrust/import.html' %}
     {% include 'AgriTrust/css.html' %}
 
+    <style>
+        .client-info-div {
+            .client-info-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                .client-info {
+                    span {
+                        display: flex;
+                        align-items: center;
+                        padding: 10px 20px; 
+                        background-color: #f3f4f6; 
+                        border-radius: 50px; 
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+                        color: var(--txt); 
+                        gap: 10px; 
+                        min-width: 100px; 
+                        max-width: fit-content; 
+
+                        p {
+                            margin: 0;
+                        }
+
+                        i {
+                            color: var(--bg1);
+                        }
+                    }
+                }
+
+                .client-work-details {
+
+                }
+            }
+        }
+    </style>
+
     <body> 
         {% include 'AgriTrust/header.html' with user=user %}
         <div class="client-info-div cont-body">
@@ -13,12 +50,33 @@
                 <div class="client-info-cont">
                     
                     <h3> {{client.fullname}} </h3>
-            
-                    <p> Contact Number : {{client.contact_number}} </p>
-                    <p> Address : {{client.address}} </p>
-                    <p> Work Details : {{client.work_details}} </p>
-                    <p> Business : {{client.business}} </p>
-                    <p> Co Maker : {{client.co_maker}} </p>
+                    <div class="client-contact-number client-info">
+                        <span>
+                            <i class="fa fa-phone"></i>
+                            <p> {{client.contact_number}} </p>
+                        </span>
+                    </div>
+                    <div class="client-address client-info">
+                        <span>
+                            <i class="fa fa-location-dot"></i>
+                            <p> Address : {{client.address}} </p>
+                        </span>
+                    </div>
+                    <div class="client-business client-info">
+                        <span>
+                            <i class="fa-solid fa-user-group"></i>
+                            <p> Co Maker : {{client.co_maker}} </p>
+                        </span>
+                    </div>
+                    <div class="client-co-maker client-info">
+                        <span>
+                            <i class="fa-solid fa-briefcase"></i>
+                            <p> Business : {{client.business}} </p>
+                        </span>
+                    </div>
+                    <div class="client-work-details client-info">
+                        <p> Work Details : {{client.work_details}} </p>
+                    </div>
                 </div>
             </div>
 

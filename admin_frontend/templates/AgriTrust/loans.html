@@ -5,7 +5,7 @@
 
     <style>
         .loans-div {
-            loans-cont {
+            .loans-cont {
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
@@ -18,7 +18,6 @@
                 }
             }
         }
-
     </style>
 
     <body> 
@@ -28,32 +27,30 @@
         <div class="loans-div cont-body">
             <h5> Loans </h5>
             <div class="cont">
-                <div class="loans-cont"></div>
+                <div class="loans-cont">
 
-                <div>
+                <div class="add-btn">
                     <button onClick="window.location.href='{% url 'loan_add' %}';"> Add Loan </button>
                 </div>
 
-                <div id = "search-client-form" oninput = "handleSearchLoan()">
-                    <input type="text" oninput="" id="search-client" placeholder="Search Client"> 
-                </div>
 
-                <div>
+                <div class="filter-btn-div">
+                    <div class="search-cont" oninput = "handleSearchLoan()">
+                        <i class="fa fa-search"></i>
+                        <input type="text" oninput="" id="search-client" placeholder="Search Client"> 
+                    </div>
+                    
                     <select id = "status-select" oninput = "handleSearchLoan()"> 
                         <option value="all"> All </option>
                         <option value="ongoing"> Ongoing </option>
                         <option value="completed"> Completed </option>
                     </select>
-                </div>
 
-                <div> 
                     <select id = "order-select" oninput = "handleSearchLoan()"> 
                         <option value="asc"> Ascending </option>
                         <option value="desc"> Descending </option>
-                    </select>
-                </div>
-
-                <div> 
+                    </select> 
+                    
                     <select id = "sort-select" oninput = "handleSearchLoan()"> 
                         <option value="client_name"> Client Name </option>
                         <option value="amount_loaned"> Amount Loaned </option>
@@ -67,9 +64,9 @@
                 </div>
 
                 <div>
-                    <table id = "loan-table" class="table table-bordered table-hover table-responsive"> 
+                    <table id = "loan-table" class="table table-bordered table-hover table-responsive selectable-row"> 
                         <tr> 
-                            <th> id </th>
+                            <th> ID </th>
                             <th> Client Name</th>
                             <th> Amount Loaned </th>
                             <th> Total Amount </th>
