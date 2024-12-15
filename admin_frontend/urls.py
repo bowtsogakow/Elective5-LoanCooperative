@@ -22,7 +22,7 @@ urlpatterns = [
   path("employees/add", views.add_employee_page, name = "employee_add"),
 
   # profile page 
-  path("profile", views.profile_page, name = "profile_info"),
+  path("profile/<int:id>", views.profile_page, name = "profile_info"),
   
   
   

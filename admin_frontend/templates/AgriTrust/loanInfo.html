@@ -2,7 +2,7 @@
     
     <body> 
 
-        {% include 'AgriTrust/header.html' %}
+        {% include 'AgriTrust/header.html' with user=user %}
 
         <a href = "{% url 'loan_list' %}"> &lt; Back </a>
 
@@ -22,6 +22,8 @@
         <p> {{ loan.date_end }} </p>
         <p> {{ loan.daily_payment }} </p>
         <p> {{ loan.days_left }} </p>
+
+        <canvas id = "qrcode-image"> {{loan.qr_code}} </canvas>
 
         <!-- Payments table -->
         <div>
@@ -44,6 +46,30 @@
             </table>
         
         </div>
-
     </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script> 
+
+        const setQrCode = () => {
+            const qrcode = '{{ loan.qr_code }}';
+            const qrcodeContainer = document.getElementById("qrcode-image");
+
+            console.log(qrcode);
+            QRCode.toCanvas(qrcodeContainer, qrcode, { width: 200, errorCorrectionLevel: 'H' }, function (error) {
+                if (error) {
+                    console.error(error);
+                    alert("Failed to generate QR code.");
+                } else {
+                    console.log("QR Code generated successfully!");
+                }
+            });
+
+        }
+
+        setQrCode();
+
+
+    </script> 
+
 </html>

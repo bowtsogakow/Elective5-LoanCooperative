@@ -30,8 +30,14 @@
 
             const login_status = data.status;
 
+            console.log(data);
+
             if(login_status == 3){
                 window.location.href = "{% url 'admin_index' %}"
+            }
+
+            if(login_status == 2){
+                window.location.href = "{% url 'cashier_index' %}"
             }
         }
 

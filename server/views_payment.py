@@ -66,3 +66,33 @@ def get_payment_list_by_loan(request, loan_id):
         "status_message": "Payments retrieved successfully",
         "payments": response
     })
+
+
+@api_view(["POST"])
+def add_payment(request): 
+    loan_id = request.data.get("loan_id")
+
+    if not loan_id: 
+        return Response({
+            "status": 0, 
+            "status_message": "Invalid input"
+            })
+    
+    loan = Loan.objects.filter(id = loan_id).first()
+
+    if not loan: 
+        return Response({
+            "status": 0, 
+            "status_message": "Loan not found"
+            })
+
+    payment = Payment(amount = loan.daily_payment, loan = loan)
+    payment.update_loan_and_save()
+
+    loan = Loan.objects.filter(id = loan_id).first()
+
+    return Response({ 
+        "status" : 1, 
+        "status_message": "Loan paid successfully",
+        "remaining_balance" : loan.total - loan.total_amount_paid
+    })

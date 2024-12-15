@@ -1,0 +1,56 @@
+<html>
+
+    <body> 
+        {% include 'AgriTrust/header.html' with user=user %}
+
+        <div>
+            <div>        
+                <h3> {{employee.fullname}} </h3>
+        
+                <p> Personal Information </p>
+
+                <form>
+
+                    <div>
+                        <label class="label" for="email">Email:</label>
+                        <input class="input" id="email" name="email" value = "{{employee.email}}" required>
+                    </div>
+                    <div>
+                        <label class="label" for="username">Username:</label>
+                        <input class="input" id="username" name="username" value="{{employee.username}}" required">
+                    </div>
+                    <div>
+                        <label class="label" for="first_name">First Name:</label>
+                        <input class="input" id="first_name" name="first_name" value="{{employee.first_name}}" required>
+                    </div>
+                    <div>
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" id="middle_name" name="middle_name" value="{{employee.middle_name}}" required">
+                    </div>
+                    <div >
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" value="{{employee.last_name}}" required">
+                    </div>
+
+                </form>
+            </div>
+
+            <p> Change Password </p>
+
+                <div>
+                    <label class="label" for="old_password"> Old Password:</label>
+                    <input class="input" id="old_password" name="old_password" required>
+                </div>
+
+                <div>
+                    <label class="label" for="new_password">New Password:</label>
+                    <input class="input" id="new_password" name="new_password" required>
+                </div>
+
+        </div>
+
+
+          
+
+    </body>
+<html>

@@ -117,4 +117,4 @@ class Payment(models.Model):
            
         self.loan.save()
 
-        super.save(*args, **kwargs)
+        super().save(*args, **kwargs)

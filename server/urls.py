@@ -19,9 +19,10 @@ urlpatterns = [
     path("get_all_loans", views_loan.get_all_loans, name="server_get_all_loans"),
     path("get_loan_by_id/<int:loan_id>", views_loan.get_loan_by_id, name="server_get_loan_by_id"),
     path("get_loan_list_by_client/<int:client_id>", views_loan.get_loan_list_by_client, name="server_get_loan_list_by_client"),
-
+    path("get_loan_by_code", views_loan.get_loan_by_code, name="server_get_loan_by_code"),
+    
     # payment
-    # path("add_payment/<int:loan_id>", views_loan.add_payment, name="server_add_payment"),
+    path("add_payment", views_payment.add_payment, name="server_add_payment"),
     # path("get_payment_by_id/<int:payment_id>", views_loan.get_payment_by_id, name="server_get_payment_by_id"),
     path("get_payment_list_by_loan/<int:loan_id>", views_payment.get_payment_list_by_loan, name="server_get_payment_list_by_loan"),
     path("get_payment_list_by_client/<int:client_id>", views_payment.get_payment_list_by_client, name="server_get_payment_list_by_client"),
@@ -31,4 +32,5 @@ urlpatterns = [
     path("add_employee", views_employees.add_employee, name = "server_add_employee"),
     path("get_employee_by_search", views_employees.get_employee_by_search, name="server_get_employee_by_search"),
     path("delete_employee", views_employees.delete_employee, name="server_delete_employee"),
+    path("get_employee_by_id/<int:employee_id>", views_employees.get_employee_by_id, name="server_get_employee_by_id"),
 ]

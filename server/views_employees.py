@@ -95,9 +95,10 @@ def add_employee(request):
             first_name = first_name, 
             middle_name = middle_name,
             last_name = last_name,
-            password = password,
             type = type
         )
+
+        new_employee.set_password(password) 
 
         new_employee.save()
 

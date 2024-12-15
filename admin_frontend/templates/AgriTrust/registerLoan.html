@@ -2,8 +2,8 @@
 
   <body>
 
-    {% include 'AgriTrust/header.html' %}
-
+    {% include 'AgriTrust/header.html' with user=user %}
+    
     <form method="POST" id = "addLoanForm">
       {% csrf_token %}
       <div>

@@ -25,7 +25,19 @@ SECRET_KEY = 'django-insecure-6xw*y#9$ahx2515-wwi=iy-s&=+5ued2f%6br8wko^ci3%njxs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+from .get_ip import get_local_ip
+ip = get_local_ip()
+
+ALLOWED_HOSTS = [
+    ip,
+    "localhost",
+    "84e9-157-10-32-130.ngrok-free.app",
+    "127.0.0.1"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+]
 
 
 # Application definition
@@ -34,6 +46,9 @@ INSTALLED_APPS = [
     'admin_frontend',
     'server',
     'auth_frontend',
+    'cashier_frontend',
+    # 'clients_frontend',
+    "django_extensions",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +66,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'coopElective5.urls'
 
@@ -156,3 +174,8 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 10800  
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  
 SESSION_SAVE_EVERY_REQUEST = True 
+
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 3600  
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True  
+# SECURE_HSTS_PRELOAD = True  

@@ -106,7 +106,11 @@ def add_employee_page(request):
   return render(request, 'AgriTrust/registerEmployee.html')
 
 @admin_required
-def profile_page(request): 
-  return None
+def profile_page(request, id): 
+  path = reverse('server_get_employee_by_id', args=[id])
+  url = f"{base_url}{path}"
+  response = requests.get(url)
+  data = response.json()
+  return render(request, 'AgriTrust/profileInfo.html', {"employee" : data["employee"]})
 
 

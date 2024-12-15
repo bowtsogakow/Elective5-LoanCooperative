@@ -13,6 +13,8 @@ def server_login(request):
     type = request.data.get("type")
     http_request = request._request
 
+    print(username, password, type)
+
     if not username or not password or not type: 
         return Response({
             "status" : 0, 

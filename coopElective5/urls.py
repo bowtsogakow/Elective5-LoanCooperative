@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', include('admin_frontend.urls')),
     path('server/', include('server.urls')),
     path('auth/', include('auth_frontend.urls')),
+    path('cashier/', include('cashier_frontend.urls')),
     path('', include('clients_frontend.urls'))
 ]
 

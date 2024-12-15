@@ -1,7 +1,7 @@
 <html>
 
     <body> 
-        {% include 'AgriTrust/header.html' %}
+        {% include 'AgriTrust/header.html' with user=user %}
 
         <div>
             <a href = "{% url 'employee_list' %}"> &lt; Back </a> <br><br>

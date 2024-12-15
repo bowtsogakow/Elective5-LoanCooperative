@@ -47,7 +47,7 @@
                 <a href = "{% url 'client_list' %}"> Clients </a>
                 <a href = "{% url 'loan_list' %}"> Loans </a>
                 <a href = "{% url 'employee_list' %}"> Employees </a>
-                <a href = "{% url 'profile_info' %}"> Profile </a>
+                <a href = "{% url 'profile_info' user.id%}"> {{user.full_name}} </a>
             </div>
         </div>
 

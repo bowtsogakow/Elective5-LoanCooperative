@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Viewport meta tag for responsiveness -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            padding: 10px; /* Add padding for mobile devices */
+        }
+
+        /* Container styling */
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        /* Styling for the scan button */
+        .scan-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .scan-button:hover {
+            background-color: #45a049;
+        }
+
+        /* QR Scanner area styling */
+        .scanner-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        /* Styling for QR result */
+        .qr-result {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Styling for the reader container */
+        #reader {
+            width: 100%;
+            height: auto;
+            max-height: 300px; /* Limiting the scanner height for mobile screens */
+        }
+
+        /* Adjustments for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px; /* Less padding for small screens */
+            }
+
+            .scan-button {
+                padding: 15px 20px; /* Slightly smaller button padding for smaller screens */
+                font-size: 14px; /* Smaller text for mobile devices */
+            }
+
+            .qr-result {
+                margin-top: 30px;
+                font-size: 14px; /* Adjust font size for smaller screens */
+
+                p {
+                    font-size: 18px;
+                    margin: 5px;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>QR Code Scanner</h1>
+        <button id="scanButton" class="scan-button">Scan QR Code</button>
+        <div id="qrScanner" class="scanner-container" style="display: none;">
+            <div id="reader"></div>
+        </div>
+
+        <div id="qrResult" class="qr-result"> QR Code Result will appear here </div>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script>
+        const scanButton = document.getElementById('scanButton');
+        const qrScanner = document.getElementById('qrScanner');
+        const readerElement = document.getElementById('reader');
+        const qrResult = document.getElementById('qrResult');
+
+        // Initialize QR scanner
+        const qrCodeScanner = new Html5QrcodeScanner("reader", {
+            fps: 10, // frames per second
+            qrbox: 250 // QR code box size
+        });
+
+        // Button click event
+        scanButton.addEventListener('click', () => {
+            console.log("Scan button clicked");
+            qrScanner.style.display = 'block'; // Show scanner
+            scanButton.style.display = 'none'; // Hide scan button
+            
+            // Start scanning
+            qrCodeScanner.render(onScanSuccess, onScanError)
+                .catch(err => {
+                    console.error("Error starting the scanner: ", err);
+                    alert("Failed to start scanner. Check your camera permissions.");
+                });
+        });
+
+        // Success callback when QR code is detected
+        async function onScanSuccess(decodedText, decodedResult) {
+            qrCodeScanner.clear(); // Stop scanning after a successful scan
+            qrScanner.style.display = 'none'; // Hide scanner after scanning
+            scanButton.style.display = 'block'; // Show the scan button again
+
+            const data = await getLoanInfo(decodedText); 
+
+            if(data.status == 0){
+                qrResult.innerHTML = "Invalid QR Code. Please try again.";    
+            }
+
+            if(data.status == 1){
+                form = `
+                    <form id = "pay-loan-form">
+                        <input type="hidden" name="loan_id" value="${data.loan.id}">
+                        <p> Client Name     : <i> ${data.
+                            
+                            loan.client_name} </i></p>
+                        <p> Daily Payment   : ${data.loan.daily_payment} </p>
+                        <input type="submit" onclick = "payLoan(event)"> 
+                    </form > 
+                `
+                qrResult.innerHTML = form;
+                
+            }
+        }
+
+        // Error callback
+        function onScanError(errorMessage) {
+            console.log("Scan error: ", errorMessage); // Log error if any
+        }
+    
+        async function getLoanInfo(qr_code){
+            const response = await fetch(`{% url 'server_get_loan_by_code' %}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    qr_code: qr_code
+                })
+            });
+
+            const data = await response.json();
+
+            return data;
+            
+        }
+
+        async function payLoan(event) {
+            event.preventDefault(); 
+
+            const loan_id = document.getElementById("pay-loan-form").loan_id.value;
+            console.log(loan_id)
+
+            const response = await fetch("{% url 'server_add_payment' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    loan_id : loan_id
+                })
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if(data.status == 1){
+                qrResult.innerHTML = `
+                    <p> ${data.status_message} </p>
+                    <p> Remaining Balance : ${data.remaining_balance} </p>
+                `;
+            }
+
+            else if (data.status == 0){
+                qrResult.innerHTML = `
+                    <p> ${data.status_message} </p>
+                `;
+            }
+            
+        }
+    </script>
+</body>
+</html>

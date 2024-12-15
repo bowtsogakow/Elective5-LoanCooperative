@@ -23,6 +23,8 @@ def admin_required(view_func):
 def client_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("login_page")
         if request.user.is_authenticated and request.user.type == 'client':
             return view_func(request, *args, **kwargs)
         else:
@@ -32,6 +34,8 @@ def client_required(view_func):
 def cashier_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("login_page")
         if request.user.is_authenticated and request.user.type == 'cashier':
             return view_func(request, *args, **kwargs)
         else:

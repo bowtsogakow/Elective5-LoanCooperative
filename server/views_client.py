@@ -44,12 +44,13 @@ def add_client(request):
         user = User(
             email = email,
             username = username,
-            password = password,
             first_name = first_name,
             middle_name = middle_name,
             last_name = last_name,
             type = type
         )
+
+        user.set_password(password)
 
         co_maker_object = User.objects.filter(full_name = co_maker).first()
         print(co_maker_object)
