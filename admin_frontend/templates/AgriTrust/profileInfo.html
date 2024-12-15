@@ -9,7 +9,9 @@
         
                 <p> Personal Information </p>
 
-                <form>
+                <form id = "update-profile-form">
+
+                    <input type="hidden" id="id" name="id" value="{{employee.id}}">
 
                     <div>
                         <label class="label" for="email">Email:</label>
@@ -31,26 +33,68 @@
                         <label for="last_name">Last Name:</label>
                         <input type="text" id="last_name" name="last_name" value="{{employee.last_name}}" required">
                     </div>
-
+                    
+                    <button  onclick="handleUpdateProfileClick(event)"> Update Profile </button>
                 </form>
             </div>
 
-            <p> Change Password </p>
+            <div> 
+                <p> Change Password </p>
 
-                <div>
-                    <label class="label" for="old_password"> Old Password:</label>
-                    <input class="input" id="old_password" name="old_password" required>
-                </div>
+                <form id = "change-password-form">
 
-                <div>
-                    <label class="label" for="new_password">New Password:</label>
-                    <input class="input" id="new_password" name="new_password" required>
-                </div>
+                    <input type="hidden" id="id" name="id" value="{{employee.id}}">
+  
+                    <div>
+                        <label class="label" for="old_password"> Old Password:</label>
+                        <input class="input" id="old_password" name="old_password" required>
+                    </div>
 
+                    <div>
+                        <label class="label" for="new_password">New Password:</label>
+                        <input class="input" id="new_password" name="new_password" required>
+                    </div>
+
+                    <button onclick="handleChangePasswordClick(event)"> Change Password </button>
+                
+                </form>                
+            </div>
         </div>
 
-
-          
-
     </body>
-<html>
+
+    <script>
+        async function handleUpdateProfileClick(event) {
+            event.preventDefault();
+            form = document.getElementById("update-profile-form");
+            formData = new FormData(form);
+
+            const response = await fetch("{% url 'server_update_employee' %}", {
+                method: "POST",
+                body: formData,
+                headers : {
+                    'X-CSRFToken': "{{csrf_token}}",
+                    "contrent-type": "application/json"
+                }
+            })
+
+
+        }
+
+        async function handleChangePasswordClick (params) {
+            event.preventDefault();
+            form = document.getElementById("change-password-form");
+            formData = new FormData(form);
+
+            const response = await fetch("{% url 'server_update_employee_password' %}", {
+                method: "POST",
+                body: formData,
+                headers : {
+                    'X-CSRFToken': "{{csrf_token}}",
+                    "contrent-type": "application/json"
+                }
+            })
+        }
+    </script> 
+
+</html>

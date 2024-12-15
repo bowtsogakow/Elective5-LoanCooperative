@@ -34,4 +34,7 @@ urlpatterns = [
     path("get_employee_by_search", views_employees.get_employee_by_search, name="server_get_employee_by_search"),
     path("delete_employee", views_employees.delete_employee, name="server_delete_employee"),
     path("get_employee_by_id/<int:employee_id>", views_employees.get_employee_by_id, name="server_get_employee_by_id"),
+    path("update_employee", views_employees.update_employee, name="server_update_employee"),
+    path("update_employee_password", views_employees.update_employee_password, name="server_update_employee_password"),
+    path("change_employee_position", views_employees.change_employee_position, name="server_change_employee_position"),
 ]

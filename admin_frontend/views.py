@@ -100,11 +100,17 @@ def add_loan_page(request):
 
 @admin_required
 def employee_list_page(request):
+  if request.user.is_superuser :
+    permission = "superadmin"
+  else : 
+    permission = "admin"
+
   path = reverse('server_get_employee_by_search')
   url = f"{base_url}{path}"
-  response = requests.post(url, data={"pagination" : 1, "type" : "all"})
+  response = requests.post(url, data={"pagination" : 1, "type" : "all", "permission" : permission})
   data = response.json()
-  return render(request, 'AgriTrust/employees.html', {"employees" : data["employees"]})
+  print(request.user.is_authenticated)
+  return render(request, 'AgriTrust/employees.html', {"employees" : data["employees"], "permission" : permission})
 
 @admin_required
 def add_employee_page(request):
