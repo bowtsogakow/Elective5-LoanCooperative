@@ -13,14 +13,15 @@ urlpatterns = [
     path("get_client_by_id/<int:client_id>", views_client.get_client_by_id, name="server_get_client_by_id"),
     path("get_client_by_search", views_client.get_clients_by_search, name="server_get_client_by_search"),
     path("delete_client", views_client.delete_client, name="server_delete_client"),
-    
+    path("get_eligible_clients_for_loan", views_client.get_eligible_clients_for_loan, name="server_get_eligible_clients_for_loan"),
     # loans
     path("add_loan", views_loan.add_loan, name="server_add_loan"),
     path("get_all_loans", views_loan.get_all_loans, name="server_get_all_loans"),
     path("get_loan_by_id/<int:loan_id>", views_loan.get_loan_by_id, name="server_get_loan_by_id"),
     path("get_loan_list_by_client/<int:client_id>", views_loan.get_loan_list_by_client, name="server_get_loan_list_by_client"),
     path("get_loan_by_code", views_loan.get_loan_by_code, name="server_get_loan_by_code"),
-    
+    path("get_loans_by_search", views_loan.get_loans_by_search, name="server_get_loans_by_search"),
+
     # payment
     path("add_payment", views_payment.add_payment, name="server_add_payment"),
     # path("get_payment_by_id/<int:payment_id>", views_loan.get_payment_by_id, name="server_get_payment_by_id"),

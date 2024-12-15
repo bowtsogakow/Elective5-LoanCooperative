@@ -243,8 +243,6 @@ def get_clients_by_search(request):
         "total_page" : total_page
     })
 
-
-    
 @api_view(["POST"])
 def delete_client(request) :
     ids = request.data.get("client_ids")
@@ -267,4 +265,38 @@ def delete_client(request) :
     return Response({
         "status" : 1,
         "status_message" : "Clients deleted successfully"
+    })
+
+
+@api_view(["GET"])
+def get_eligible_clients_for_loan(request): 
+    clients = User.objects.filter(type = "client", has_loan = False).prefetch_related("ClientInfos")
+
+    response = []
+
+    for client in clients : 
+        clientInfo = client.ClientInfos.first()
+
+        if not clientInfo : 
+            continue
+
+        if not clientInfo.billing_statement_electric or not clientInfo.billing_statement_water :
+            continue
+
+        if not clientInfo.co_maker : 
+            continue
+
+        data = {
+            "id" : client.id,
+            "fullname" : client.full_name,
+        } 
+
+        response.append(data)
+
+    sorted_response = sorted(response, key = lambda x : x["fullname"])
+
+    return Response({
+        "status" : 1,
+        "status_message" : "Eligible clients were retrieved successfully",
+        "clients" : sorted_response
     })

@@ -34,15 +34,49 @@
                     <button onClick="window.location.href='{% url 'loan_add' %}';"> Add Loan </button>
                 </div>
 
+                <div id = "search-client-form" oninput = "handleSearchLoan()">
+                    <input type="text" oninput="" id="search-client" placeholder="Search Client"> 
+                </div>
+
                 <div>
-                    <table class="table table-bordered table-hover table-responsive"> 
+                    <select id = "status-select" oninput = "handleSearchLoan()"> 
+                        <option value="all"> All </option>
+                        <option value="ongoing"> Ongoing </option>
+                        <option value="completed"> Completed </option>
+                    </select>
+                </div>
+
+                <div> 
+                    <select id = "order-select" oninput = "handleSearchLoan()"> 
+                        <option value="asc"> Ascending </option>
+                        <option value="desc"> Descending </option>
+                    </select>
+                </div>
+
+                <div> 
+                    <select id = "sort-select" oninput = "handleSearchLoan()"> 
+                        <option value="client_name"> Client Name </option>
+                        <option value="amount_loaned"> Amount Loaned </option>
+                        <option value="total_amount"> Total Amount </option>
+                        <option value="start_date"> Start Date </option>
+                        <option value="end_date"> End Date </option>
+                        <option value="daily_payment"> Daily Payment </option>
+                        <option value="days_left"> Days Left </option>
+                        <option value="payment_position"> Payment Position </option>
+                    </select>
+                </div>
+
+                <div>
+                    <table id = "loan-table" class="table table-bordered table-hover table-responsive"> 
                         <tr> 
                             <th> id </th>
-                            <th>Client Name</th>
-                            <th> Amount </th>
+                            <th> Client Name</th>
+                            <th> Amount Loaned </th>
+                            <th> Total Amount </th>
                             <th> Status </th>
                             <th> Start Date </th>
                             <th> End Date </th>
+                            <th> Remaining Balance </th>
                             <th> Daily Payment </th>
                             <th> Days Left </th>
                             <th> Days Ahead/Behind (+/-) </th>
@@ -51,10 +85,12 @@
                             <tr  onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
                                 <td> {{loan.id}} </td>
                                 <td> {{loan.client_name}} </a> </td>
-                                <td> {{loan.amount}} </td>
+                                <td> {{loan.amount_loaned}} </td>
+                                <td> {{loan.total_amount}} </td>
                                 <td> {{loan.status}} </td>
                                 <td> {{loan.start_date}} </td>
                                 <td> {{loan.end_date}} </td>
+                                <td> {{loan.remaining_balance}} </td>
                                 <td> {{loan.daily_payment}} </td>
                                 <td> {{loan.days_left}} </td>
                                 <td> {{loan.payment_position}} </td>
@@ -68,4 +104,67 @@
         </div>
 
     </body>
-<html>
+
+    <script> 
+
+        function redirectToLoanInfo(id){
+            window.location.href = "loans/" + id;
+        }
+
+        async function handleSearchLoan() {
+            
+            const response = await fetch("{% url 'server_get_loans_by_search' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    'name': document.getElementById("search-client").value,
+                    'pagination' : 1, 
+                    'status' : document.getElementById("status-select").value,
+                    'order' : document.getElementById("order-select").value,
+                    'sort' : document.getElementById("sort-select").value
+                })
+            })    
+
+            const data = await response.json();
+            const loans = data.loans;
+            const table = document.getElementById("loan-table");
+            table.innerHTML = `
+                <tr> 
+                    <th> id </th>
+                    <th> Client Name</th>
+                    <th> Amount Loaned </th>
+                    <th> Total Amount </th>
+                    <th> Status </th>
+                    <th> Start Date </th>
+                    <th> End Date </th>
+                    <th> Remaining Balance </th>
+                    <th> Daily Payment </th>
+                    <th> Days Left </th>
+                    <th> Days Ahead/Behind (+/-) </th>
+                </tr>
+            `;
+
+            for (loan of loans) {
+                table.innerHTML += `
+                    <tr  onclick = "redirectToLoanInfo(${loan.id})">
+                        <td> ${loan.number_display} </td>
+                        <td> ${loan.client_name} </td>
+                        <td> ${loan.amount_loaned} </td>
+                        <td> ${loan.total_amount} </td>
+                        <td> ${loan.status} </td>
+                        <td> ${loan.start_date} </td>
+                        <td> ${loan.end_date} </td>
+                        <td> ${loan.remaining_balance} </td>
+                        <td> ${loan.daily_payment} </td>
+                        <td> ${loan.days_left} </td>
+                        <td> ${loan.payment_position} </td>
+                    </tr>
+                `
+            }
+        }
+            
+    </script>
+</html>
