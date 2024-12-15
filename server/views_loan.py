@@ -340,7 +340,45 @@ def get_loans_by_search(request):
         "total_page" : total_page,
     })
 
-    
+@api_view(["GET"])
+def get_latest_loan_by_client(request, client_id):
+    client = User.objects.filter(id = client_id).first()
+
+    if not client: 
+        return Response({
+            "status" : 0,
+            "status_message" : "Client does not exist"
+        })
+
+    loan = Loan.objects.filter(client = client, status = "ongoing").order_by("-date_created").first()
+
+    if not loan : 
+        return Response({
+            "status" : 2,
+            "status_message" : "Client does not have any existing loan"
+        })
+
+    data = {
+        "id" : loan.id,
+        "client_name" : loan.client.full_name,
+        "amount_loaned" : loan.amount_loaned,   
+        "total_amount" : loan.total,
+        "status" : loan.status,
+        "remaining_balance" : loan.total - loan.total_amount_paid,  
+        "start_date" : loan.date_created,
+        "end_date" : loan.date_end,
+        "days_left" : loan.days_total - loan.days_paid,
+        "payment_position" : loan.days_paid - (datetime.date.today() - loan.date_created).days,
+        "daily_payment" : loan.daily_payment,
+        "interest" : loan.interest,
+        "qrcode" : loan.qr_code
+    }
+
+    return Response({
+        "status" : 1,
+        "status_message" : "Loan retrieved successfully",
+        "loan" : data
+    })
     
 
     

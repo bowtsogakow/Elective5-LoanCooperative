@@ -1,0 +1,123 @@
+<html>
+    <head> 
+        <style>
+            
+            .dashboard {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                margin: 20px auto;
+                max-width: 800px;
+            }
+    
+            .dashboard h2 {
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 20px;
+                color: #333;
+            }
+    
+            /* Styling for the remaining balance */
+            .remaining-balance {
+                font-size: 36px;
+                font-weight: bold;
+                color: white;
+                background-color: #f44336; /* Bright red background */
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+    
+            /* Row Styling for other details */
+            .row {
+                display: flex;
+                justify-content: space-between;
+                margin: 10px 0;
+                font-size: 16px;
+                padding: 10px 0;
+                border-bottom: 1px solid #ddd;
+            }
+    
+            .row div {
+                color: #555;
+            }
+    
+            .row div.value {
+                font-weight: normal;
+                color: #333;
+            }
+    
+            .row div.label {
+                font-weight: bold;
+            }
+    
+            /* For emphasis */
+            .highlighted {
+                color: #f44336; /* Red color for important fields */
+            }
+    
+            /* Style for the footer or additional information */
+            .footer {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 14px;
+                color: #777;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        {% include 'clients_frontend/header.html' with user=user %}
+        
+        <div class="dashboard">
+            <h3>Dashboard</h3>
+
+                {% if not has_loan %}
+                    <p> You currently has no active loan </p>
+                {% else %}
+
+                    <div class="remaining-balance">
+                        Remaining Balance: {{ loan.remaining_balance }}
+                    </div>
+
+               
+                    <div class="row">
+                        <div class="label">Client Name:</div>
+                        <div class="value">{{ loan.client_name }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Loan Amount:</div>
+                        <div class="value">{{ loan.amount_loaned }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Total Amount:</div>
+                        <div class="value">{{ loan.total_amount }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Start Date:</div>
+                        <div class="value">{{ loan.start_date }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">End Date:</div>
+                        <div class="value">{{ loan.end_date }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Days Left:</div>
+                        <div class="value">{{ loan.days_left }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Payment Position:</div>
+                        <div class="value">{{ loan.payment_position }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Status:</div>
+                        <div class="value highlighted">{{ loan.status }}</div>
+                    </div>
+              
+                {% endif %}
+        </div>
+    </body>
+</html>

@@ -34,7 +34,8 @@ def server_login(request):
         login(http_request, user)
         return Response({
             "status" : 1, 
-            "status_message" : "Logged in as client"
+            "status_message" : "Logged in as client",
+            "client_id" : user.id
         })
 
     

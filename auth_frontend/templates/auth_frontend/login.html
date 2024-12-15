@@ -39,6 +39,10 @@
             if(login_status == 2){
                 window.location.href = "{% url 'cashier_index' %}"
             }
+
+            if(login_status == 1){
+                window.location.href = "/index/" + data.client_id
+            }
         }
 
       

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'server',
     'auth_frontend',
     'cashier_frontend',
-    # 'clients_frontend',
+    'clients_frontend',
     "django_extensions",
     'django.contrib.admin',
     'django.contrib.auth',

@@ -22,7 +22,8 @@ urlpatterns = [
     path("get_loan_list_by_client/<int:client_id>", views_loan.get_loan_list_by_client, name="server_get_loan_list_by_client"),
     path("get_loan_by_code", views_loan.get_loan_by_code, name="server_get_loan_by_code"),
     path("get_loans_by_search", views_loan.get_loans_by_search, name="server_get_loans_by_search"),
-
+    path("get_latest_loan_by_client/<int:client_id>", views_loan.get_latest_loan_by_client, name="server_get_latest_loan_by_client"),
+   
     # payment
     path("add_payment", views_payment.add_payment, name="server_add_payment"),
     # path("get_payment_by_id/<int:payment_id>", views_loan.get_payment_by_id, name="server_get_payment_by_id"),
