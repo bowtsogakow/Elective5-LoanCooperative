@@ -3,22 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Viewport meta tag for responsiveness -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        /* Body styling */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-            padding: 10px; /* Add padding for mobile devices */
-        }
 
         /* Container styling */
         .container {
@@ -98,6 +83,7 @@
 </head>
 
 <body>
+    {% include 'cashier_frontend/header.html' with user=user %}
     <div class="container">
         <h1>QR Code Scanner</h1>
         <button id="scanButton" class="scan-button">Scan QR Code</button>

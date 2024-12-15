@@ -11,7 +11,7 @@ class User(AbstractUser):
     has_loan = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if self.first_name and self.last_name:
+        if self.first_name and self.middle_name and self.last_name:
             self.full_name = f"{self.first_name} {self.middle_name} {self.last_name}"
         super().save(*args, **kwargs)
 
