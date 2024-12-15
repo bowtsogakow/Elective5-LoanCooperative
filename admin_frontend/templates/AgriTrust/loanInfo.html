@@ -3,48 +3,54 @@
     <body> 
 
         {% include 'AgriTrust/header.html' with user=user %}
+        <div class="loan-info-div cont-body">
+            <a href = "{% url 'loan_list' %}"> &lt; Back </a>
+    
+            <div class="cont">
+                <div class="loan-info-cont">
 
-        <a href = "{% url 'loan_list' %}"> &lt; Back </a>
-
-        <p> {{ loan.id }} </p>
-        <p> {{ loan.client }} </p>
-        <p> {{ loan.amount_loaned }} </p>
-        <p> {{ loan.interest_percentage }} </p>
-        <p> {{ loan.loan_term }} </p>
-        <p> {{ loan.interest_mode }} </p>
-        <p> {{ loan.interest }} </p>
-        <p> {{ loan.total }} </p>
-        <p> {{ loan.days_total }} </p>
-        <p> {{ loan.days_paid }} </p>
-        <p> {{ loan.total_amount_paid }} </p>
-        <p> {{ loan.status }} </p>
-        <p> {{ loan.date_created }} </p>
-        <p> {{ loan.date_end }} </p>
-        <p> {{ loan.daily_payment }} </p>
-        <p> {{ loan.days_left }} </p>
-
-        <canvas id = "qrcode-image"> {{loan.qr_code}} </canvas>
-
-        <!-- Payments table -->
-        <div>
-            <h3> Payments History </h3> 
+                    <h2> {{ loan.client_name }} </h2>
+                    
+                    <p>Amount Loaned:       {{ loan.amount_loaned }}</p>
+                    <p>Interest Percentage: {{ loan.interest_percentage }}</p>
+                    <p>Loan Term:           {{ loan.loan_term }}</p>
+                    <p>Interest Mode:       {{ loan.interest_mode }}</p>
+                    <p>Interest:            {{ loan.interest }}</p>
+                    <p>Total:               {{ loan.total }}</p>
+                    <p>Days Total:          {{ loan.days_total }}</p>
+                    <p>Days Paid:           {{ loan.days_paid }}</p>
+                    <p>Total Amount Paid:   {{ loan.total_amount_paid }}</p>
+                    <p>Status:              {{ loan.status }}</p>
+                    <p>Date Created:        {{ loan.date_created }}</p>
+                    <p>Date End:            {{ loan.date_end }}</p>
+                    <p>Daily Payment:       {{ loan.daily_payment }}</p>
+                    <p>Days Left:           {{ loan.days_left }}</p>
             
-            <table>
-                <tr >
-                    <th> ID </th>
-                    <th> Amount </th>
-                    <th> Date </th>
-                </tr>
-
-                {%for payment in payments%}
-                    <tr>
-                        <td> {{payment.id}} </td>
-                        <td> {{payment.amount}} </td>
-                        <td> {{payment.date}} </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        
+                    <canvas id = "qrcode-image"> {{loan.qr_code}} </canvas>
+            
+                    <!-- Payments table -->
+                    <div>
+                        <h3> Payments History </h3> 
+                        
+                        <table>
+                            <tr >
+                                <th> ID </th>
+                                <th> Amount </th>
+                                <th> Date </th>
+                            </tr>
+            
+                            {%for payment in payments%}
+                                <tr>
+                                    <td> {{payment.id}} </td>
+                                    <td> {{payment.amount}} </td>
+                                    <td> {{payment.date}} </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 
