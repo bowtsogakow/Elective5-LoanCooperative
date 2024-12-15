@@ -8,15 +8,27 @@
             .client-info-cont {
                 display: flex;
                 flex-direction: column;
+                flex-wrap: nowrap;
                 gap: 20px;
 
                 .client-info {
+                    position: relative;
+
+                    .client-info-label {
+                        position: absolute;
+                        top: -6;
+                        left: 10;
+                        font-weight: bold;
+                        color: var(--txt1);
+                        font-size: 70%;
+                    }
+
                     span {
                         display: flex;
                         align-items: center;
-                        padding: 10px 20px; 
+                        padding: 15px 25px;
                         background-color: #f3f4f6; 
-                        border-radius: 50px; 
+                        border-radius: 30px; 
                         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
                         color: var(--txt); 
                         gap: 10px; 
@@ -33,10 +45,81 @@
                     }
                 }
 
-                .client-work-details {
+                .client-business {
+                    position: relative;
+                    display: flex; 
+                    flex-direction: column;
+                    gap: 10px; 
 
+                    .client-info-label {
+                        position: absolute;
+                        top: -6;
+                        left: 10;
+                        font-weight: bold;
+                        color: var(--txt1);
+                        font-size: 70%;
+                    }
+
+                    span {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: left;
+                        padding: 15px 25px;
+                        background-color: #f3f4f6; 
+                        border-radius: 15px; 
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+                        color: var(--txt); 
+                        gap: 10px; 
+                        min-width: 100px; 
+                        max-width: fit-content; 
+                    
+                        .client-business-info {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            
+                            p {
+                                margin: 0;
+                            }
+                        }
+                    }
                 }
             }
+
+            .loan-history-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            @media (max-width: 768px) {
+
+            /* Stack tables vertically on small screens */
+            table {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            th, td {
+                font-size: 14px; /* Slightly smaller text for mobile screens */
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Reduce font size further on very small screens */
+            .client-info-label {
+                font-size: 60%;
+            }
+
+            span {
+                padding: 10px 15px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+        }
         }
     </style>
 
@@ -51,65 +134,85 @@
                     
                     <h3> {{client.fullname}} </h3>
                     <div class="client-contact-number client-info">
+                        <div class="client-info-label">
+                            <p> Contact Number </p>
+                        </div>
                         <span>
                             <i class="fa fa-phone"></i>
                             <p> {{client.contact_number}} </p>
                         </span>
                     </div>
+
                     <div class="client-address client-info">
+                        <div class="client-info-label">
+                            <p> Address </p>
+                        </div>
                         <span>
                             <i class="fa fa-location-dot"></i>
-                            <p> Address : {{client.address}} </p>
+                            <p> {{client.address}} </p>
                         </span>
                     </div>
-                    <div class="client-business client-info">
+
+                    <div class="client-co-maker client-info">
+                        <div class="client-info-label">
+                            <p> Co-Maker </p>
+                        </div>
                         <span>
                             <i class="fa-solid fa-user-group"></i>
-                            <p> Co Maker : {{client.co_maker}} </p>
+                            <p> {{client.co_maker}} </p>
                         </span>
                     </div>
-                    <div class="client-co-maker client-info">
+
+                    <div class="client-business">
+                        <div class="client-info-label">
+                            <p> Business </p>
+                        </div>
                         <span>
-                            <i class="fa-solid fa-briefcase"></i>
-                            <p> Business : {{client.business}} </p>
+                            <div class="client-business-info">
+                                <i class="fa-solid fa-briefcase"></i>
+                                <p> {{client.business}} </p>
+                            </div>
+                            <div class="client-business-info">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <p> {{client.work_details}} </p>
+                            </div>
                         </span>
-                    </div>
-                    <div class="client-work-details client-info">
-                        <p> Work Details : {{client.work_details}} </p>
                     </div>
                 </div>
             </div>
 
             <!-- loan info table  -->
-            <div>
+            <div class="loan-history-div">
+                <br><br>
                 <h3> Loan History </h3> 
-                
-                <table>
-                    <tr >
-                        <th> Loan ID </th>
-                        <th> Amount </th>
-                        <th> Interest Percentage </th>
-                        <th> Loan Term </th>
-                        <th> Total </th>
-                        <th> Date Created </th>
-                        <th> Date End </th>
-                        <th> Status </th>
-                    </tr>
+                <div class="loan-history-cont cont">
 
-                    {%for loan in loans%}
-                        <tr onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
-                            <td> {{loan.id}} </td>
-                            <td> {{loan.amount}} </td>
-                            <td> {{loan.interest_percentage}} </td>
-                            <td> {{loan.loan_term}} </td>
-                            <td> {{loan.total}} </td>
-                            <td> {{loan.date_created}} </td>
-                            <td> {{loan.date_end}} </td>
-                            <td> {{loan.status}} </td>
+                    <table>
+                        <tr >
+                            <th> Loan ID </th>
+                            <th> Amount </th>
+                            <th> Interest Percentage </th>
+                            <th> Loan Term </th>
+                            <th> Total </th>
+                            <th> Date Created </th>
+                            <th> Date End </th>
+                            <th> Status </th>
                         </tr>
-                    {% endfor %}
-                </table>
-            
+    
+                        {%for loan in loans%}
+                            <tr onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
+                                <td> {{loan.id}} </td>
+                                <td> {{loan.amount}} </td>
+                                <td> {{loan.interest_percentage}} </td>
+                                <td> {{loan.loan_term}} </td>
+                                <td> {{loan.total}} </td>
+                                <td> {{loan.date_created}} </td>
+                                <td> {{loan.date_end}} </td>
+                                <td> {{loan.status}} </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
 
             <!-- Payments table -->

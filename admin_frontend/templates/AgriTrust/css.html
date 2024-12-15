@@ -21,6 +21,10 @@
 
     .cont-body {
         padding: 30px;
+
+        @media screen and (max-width: 768px) {
+            padding: 30px 10px;
+        }
     }
     
     a {
@@ -48,6 +52,9 @@
         padding: 40px;
         background-color: var(--bg4);
         border-radius: 5px;
+        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: auto;
 
         .selectable-row {
             tr {
@@ -70,6 +77,10 @@
                     color: var(--btn-hov);
                 }
             }
+        }
+
+        @media screen and (max-width: 768px) {
+            padding: 30px 10px;
         }
     }
 
@@ -116,11 +127,23 @@
     table {
         font-size: .9em;
         border-radius: 20px;
+        border-collapse: collapse;
+        width: 100%;
+
+        th,
+        td {
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            min-width: fit-content;
+            white-space: nowrap;
+        }
         
         th {
             background-color: var(--txt1);
             color: var(--txt3);
         }
+        
     }
 
 
