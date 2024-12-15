@@ -3,25 +3,43 @@
     {% include 'AgriTrust/import.html' %}
     {% include 'AgriTrust/css.html' %}
 
+    <style>
+        .employees-div {
+            .employees-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            table {
+                th {
+                    background-color: var(--txt1);
+                    color: var(--txt3);
+                }
+            }
+        }
+    </style>
+
     <body> 
         {% include 'AgriTrust/header.html' with user=user %}
 
-        <div>
+        <div class="employees-div cont-body">
         
             <h5> Employees </h5>
 
-            <div>
-                <div>
+            <div class="cont">
+                <div class="employees-cont">
 
-                    <div>
-                        <button onclick="window.location.href='{% url 'employee_add' %}';"> Add Employee </button> 
+                    <div class="add-btn">
+                        <button onclick="window.location.href='{% url 'employee_add' %}';"> Add Employee </button>
                     </div>
 
-                    <div>
-                        <input type="text" oninput="handleSearchEmployee()" id="search-employee" placeholder="Search Employee"> 
-                    </div>
-
-                    <div>
+                    <div class="filter-btn-div">
+                        <div class="search-cont">
+                            <i class="fa fa-search"></i> 
+                            <input type="text" oninput="handleSearchEmployee()" id="search-employee" placeholder="Search Employee"> 
+                        </div>
+                        
                         <select id = "type-select" oninput="handleSearchEmployee()"> 
                             <option value="all"> All </option>
                             <option value="admin"> Admin </option>
@@ -53,8 +71,8 @@
                         </table>
                     </div>
 
-                    <div>
-                        <p id = "selected-indicator"> </p>
+                    <div class="filter-btn-div">
+                        <p>Selected <span id = "selected-indicator"> </span> </p>
                         <div > 
                             <button onclick="handleDeleteEmployees()"> Delete Selected Employee </button> 
                         </div>

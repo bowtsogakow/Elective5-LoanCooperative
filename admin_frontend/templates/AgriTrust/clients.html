@@ -15,28 +15,6 @@
                     color: var(--txt3);
                 }
             }
-
-            .client-row {
-                cursor: pointer;
-                transition: 0.3s ease-in-out;
-
-                .client-name,
-                td {
-                    transition: 0.3s ease-in-out;
-
-                    &:hover {
-                        color: var(--btn-hov);
-                    }
-                }
-            }
-
-            a {
-                color: var(--btn);
-
-                &:hover {
-                    color: var(--btn-hov);
-                }
-            }
         }
     </style>
 
@@ -50,15 +28,15 @@
             <div class="cont">
                 <div class="client-cont">
 
-                    <div class="add-client-btn">
+                    <div class="add-btn">
                         <button onclick="window.location.href='{% url 'client_add' %}';"> Add Client </button> 
                     </div>
 
-                    <div id = "search-client-form">
-                        <input type="text" oninput="handleSearchClient()" id="search-client" placeholder="Search Client"> 
-                    </div>
-
-                    <div>
+                    <div class="filter-btn-div">
+                        <div class="search-cont">
+                            <i class="fa fa-search"></i>
+                            <input type="text" oninput="handleSearchClient()" id="search-client" placeholder="Search Client"> 
+                        </div>
                         <select id = "has-loan-select" oninput="handleSearchClient()"> 
                             <option value="all"> All </option>
                             <option value="has-loan"> Has Loan </option>
@@ -67,7 +45,7 @@
                     </div>
                     
                     <div>
-                        <table id = "client-table-body" class="table table-bordered table-hover table-responsive"> 
+                        <table id = "client-table-body" class="table table-bordered table-hover table-responsive selectable-row"> 
                             <tr> 
                                 <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
                                 <th> ID </th>
@@ -93,8 +71,8 @@
                         </table>
                     </div>
 
-                    <div>
-                        <p id = "selected-indicator"> </p>
+                    <div class="filter-btn-div">
+                        <p>Selected <span id = "selected-indicator"></span></p>
                         <div > 
                             <button onclick="handleDeleteClients()"> Delete Selected Clients </button> 
                         </div>

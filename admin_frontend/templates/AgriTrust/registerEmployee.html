@@ -2,46 +2,49 @@
 
     <body> 
         {% include 'AgriTrust/header.html' with user=user %}
+        {% include 'AgriTrust/css.html' with user=user %}
 
-        <div>
+        <div class="reg-employee-div reg-div cont-body">
             <a href = "{% url 'employee_list' %}"> &lt; Back </a> <br><br>
 
-            <div>
-                <h4> Add Employee</h4>
+            <div class="cont">
+                <h4> Add <span> Employee </span></h4>
 
                 <form id = "add-employee-form"> 
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label class="label" for="email">Email:</label>
                         <input class="input" id="email" name="email" required>
                     </div>
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label class="label" for="username">Username:</label>
                         <input class="input" id="username" name="username" required>
                     </div>
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label class="label" for="password">Password:</label>
                         <input class="input" id="password" name="password" required>
                     </div>
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label class="label" for="first_name">First Name:</label>
                         <input class="input" id="first_name" name="first_name" required>
                     </div>
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label for="middle_name">Middle Name:</label>
                         <input type="text" id="middle_name" name="middle_name" required>
                     </div>
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label for="last_name">Last Name:</label>
                         <input type="text" id="last_name" name="last_name" required>
                     </div>
-                    <div class="employee-input-div">
+                    <div class="input-div">
                         <label for="type">Type:</label>
                         <select id="type" name="type" required> 
                             <option value="cashier"> Cashier/Collector</option>
                             <option value="admin"> Admin </option>
                         </select>
                     </div>
-                    <button onclick="submitEmployeeForm(event)"> Submit </button>
+                    <div class="btn-div">
+                        <button onclick="submitEmployeeForm(event)"> Submit </button>
+                    </div>
                 </form>
             </div>
         </div>
