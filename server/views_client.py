@@ -312,7 +312,6 @@ def get_client_registration_table(request):
         days_ago = timezone.now() - datetime.timedelta(days=i)
        
         clients = User.objects.filter(type = "client", is_active = True, date_joined__date=days_ago).count()
-        print(clients)
 
         result.append({
             "date" : days_ago.strftime('%Y-%m-%d'),

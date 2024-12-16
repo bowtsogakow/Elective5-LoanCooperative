@@ -366,6 +366,8 @@ def get_dashboard_info(request):
     today = datetime.date.today()
     total_payments = Payment.objects.filter(date = today).aggregate(total = Sum('amount'))
 
+    print(total_payments)
+
     return Response({
         "status" : 1,
         "status_message" : "Dashboard info retrieved successfully",

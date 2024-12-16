@@ -29,6 +29,7 @@ def index(request):
   response_client_registration_table = requests.get(url_client_registration_table)
   data_client_registration_table = response_client_registration_table.json()
 
+  print(data_get_dashboard_info)
   return render(request, 'AgriTrust/index.html', {
     "payment_table" : data_payment_table["result"], 
     "client_registration_table" : data_client_registration_table["result"],

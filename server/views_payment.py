@@ -105,7 +105,6 @@ def get_payment_table(request):
     result = []
     for i in range(6, -1, -1):
         days_ago = timezone.now() - datetime.timedelta(days=i)
-        print(days_ago)
         payments = Payment.objects.filter(date=days_ago)
         amount = 0
         for payment in payments : 
