@@ -357,21 +357,28 @@ def get_latest_loan_by_client(request, client_id):
             "status" : 2,
             "status_message" : "Client does not have any existing loan"
         })
+    
+    remaining_balance = loan.total - loan.total_amount_paid
+    progress = loan.total - remaining_balance / loan.total
+    progress *= 100
 
     data = {
         "id" : loan.id,
         "client_name" : loan.client.full_name,
         "amount_loaned" : loan.amount_loaned,   
         "total_amount" : loan.total,
+        "interest_percentage" : loan.interest_percentage,   
         "status" : loan.status,
-        "remaining_balance" : loan.total - loan.total_amount_paid,  
+        "remaining_balance" : remaining_balance,
+        "loan_term" : loan.loan_term,
         "start_date" : loan.date_created,
         "end_date" : loan.date_end,
         "days_left" : loan.days_total - loan.days_paid,
         "payment_position" : loan.days_paid - (datetime.date.today() - loan.date_created).days,
         "daily_payment" : loan.daily_payment,
         "interest" : loan.interest,
-        "qrcode" : loan.qr_code
+        "qrcode" : loan.qr_code, 
+        "progress" : progress
     }
 
     return Response({

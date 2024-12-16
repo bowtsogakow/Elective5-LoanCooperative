@@ -14,7 +14,28 @@ from server.decorators import admin_required
 
 @admin_required
 def index(request):
-  return render(request, 'AgriTrust/index.html')
+  path_payment_table = reverse('server_get_payment_table')
+  url_payment_table = f"{base_url}{path_payment_table}"
+  response_payment_table = requests.get(url_payment_table)
+  data_payment_table = response_payment_table.json()
+
+  path_get_dashboard_info = reverse('server_get_dashboard_info')
+  url_get_dashboard_info = f"{base_url}{path_get_dashboard_info}"
+  response_get_dashboard_info = requests.get(url_get_dashboard_info)
+  data_get_dashboard_info = response_get_dashboard_info.json()
+
+  path_client_registration_table = reverse('server_get_client_registration_table')
+  url_client_registration_table = f"{base_url}{path_client_registration_table}"
+  response_client_registration_table = requests.get(url_client_registration_table)
+  data_client_registration_table = response_client_registration_table.json()
+
+  return render(request, 'AgriTrust/index.html', {
+    "payment_table" : data_payment_table["result"], 
+    "client_registration_table" : data_client_registration_table["result"],
+    "total_payments" : data_get_dashboard_info["total_payments"],
+    "total_loaned_amount" : data_get_dashboard_info["total_loaned_amount"],
+    "total_clients" : data_get_dashboard_info["clients"]
+  })
 
 # clients 
 @admin_required

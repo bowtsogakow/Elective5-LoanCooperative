@@ -7,7 +7,8 @@ from server.decorators import client_required
 # Create your views here.
 
 @client_required
-def index(request, id): 
+def index(request): 
+    id = request.user.id
     path_loan_info = reverse('server_get_latest_loan_by_client', args=[id])
     url = f"{base_url}{path_loan_info}"
     response = requests.get(url)
@@ -38,3 +39,4 @@ def index(request, id):
         "payments" : data_get_payment_by_client["payments"]
     })
 
+ 

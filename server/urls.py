@@ -15,6 +15,8 @@ urlpatterns = [
     path("get_client_by_search", views_client.get_clients_by_search, name="server_get_client_by_search"),
     path("delete_client", views_client.delete_client, name="server_delete_client"),
     path("get_eligible_clients_for_loan", views_client.get_eligible_clients_for_loan, name="server_get_eligible_clients_for_loan"),
+    path("get_client_registration_table", views_client.get_client_registration_table, name="server_get_client_registration_table"),
+
     # loans
     path("add_loan", views_loan.add_loan, name="server_add_loan"),
     path("get_all_loans", views_loan.get_all_loans, name="server_get_all_loans"),
@@ -29,6 +31,7 @@ urlpatterns = [
     # path("get_payment_by_id/<int:payment_id>", views_loan.get_payment_by_id, name="server_get_payment_by_id"),
     path("get_payment_list_by_loan/<int:loan_id>", views_payment.get_payment_list_by_loan, name="server_get_payment_list_by_loan"),
     path("get_payment_list_by_client/<int:client_id>", views_payment.get_payment_list_by_client, name="server_get_payment_list_by_client"),
+    path("get_payment_table", views_payment.get_payment_table, name="server_get_payment_table"),
 
     #employee
     path("get_all_employees", views_employees.get_all_employees, name="server_get_all_employees"),
@@ -39,4 +42,5 @@ urlpatterns = [
     path("update_employee", views_employees.update_employee, name="server_update_employee"),
     path("update_employee_password", views_employees.update_employee_password, name="server_update_employee_password"),
     path("change_employee_position", views_employees.change_employee_position, name="server_change_employee_position"),
+    path("get_dashboard_info", views_employees.get_dashboard_info, name="server_get_dashboard_info"),
 ]

@@ -1,12 +1,217 @@
 <html>
+
+    <head> 
+
+        <style> 
+
+            .dashboard {
+            min-height: 100vh;
+            background-color: #f9fafb;
+            padding: 2rem;
+            }
+
+            h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            }
+
+            .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            }
+
+            @media (min-width: 768px) {
+            .summary-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            }
+
+            .summary-card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            }
+
+            .summary-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .summary-card h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            }
+
+            .summary-card .value {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #111827;
+            margin: 0.5rem 0;
+            }
+
+            .summary-card .description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            }
+
+            .charts {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            @media (min-width: 1024px) {
+            .charts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            }
+
+            .chart-container {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            }
+
+            .chart-container h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            }
+
+            .chart-wrapper {
+            height: 300px;
+            width: 100%;
+            }
+
+        </style>
+    </head>
   
-  <body>
+    <body>
+        {% include 'AgriTrust/header.html' with user=user %}
 
-    {% include 'AgriTrust/header.html' with user=user %}
+        <div class="dashboard"> 
 
-    <h1> Home </h1>
-    
-  </body>
+            
+            <h5> Dashboard </h5>
+            
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>Daily Collected Payment</h3>
+                    <p class="value"> &#8369; {{total_payments}}</p>
+                    <p class="description">+20% from last month</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Total Clients</h3>
+                    <p class="value"> {{total_clients}}</p>
+                    <p class="description">+15% from last week</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3> Total Loaned Amount</h3>
+                    <p class="value"> &#8369; {{total_loaned_amount}}</p>
+                    <p class="description">+5% from yesterday</p>
+                </div>
+            </div>
+
+            <div class="charts">
+
+                <div class="chart-container">
+                    <h3> Collected Payments</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="myChart" width="200" height="100"> </canvas>
+                    </div>
+                </div>
+        
+                <div class="chart-container">
+                    <h3>User Activity</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="myChart2" width="200" height="100"> </canvas>
+                    </div>
+                </div>
+
+            </div>
+            
+            
+        
+        </div>
+    </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        const paymentTable = {{ payment_table|safe }};  
+
+        const labels = paymentTable.map(entry => entry.date);  
+        const data = paymentTable.map(entry => entry.total_amount);
+
+        console.log(labels);
+        console.log(data);
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Total Payments",
+                    data: data,
+                    backgroundColor:  '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                } 
+            }
+        });
+
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+
+        const userActivityTable = {{ client_registration_table|safe }};
+
+        const labels2 = userActivityTable.map(entry => entry.date);
+        const data2 = userActivityTable.map(entry => entry.client_count);
+
+        var myChart2 = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: labels2,
+                datasets: [{
+                    label: "New Clients",
+                    data: data2,
+                    backgroundColor:  '#28a745',
+                    borderColor: '#28a745',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                } 
+            }
+        });
+
+    </script>
 
 <html>
 
