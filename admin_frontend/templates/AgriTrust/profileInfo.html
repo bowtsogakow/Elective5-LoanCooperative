@@ -3,61 +3,61 @@
     <body> 
         {% include 'AgriTrust/header.html' with user=user %}
 
-        <div>
-            <div>        
+        <div class="profile-info-div cont-body">
+            <div class="profile-info-cont cont">        
                 <h3> {{employee.fullname}} </h3>
-        
-                <p> Personal Information </p>
 
-                <form id = "update-profile-form">
+                <div class="reg-div">
+                    <form id = "update-profile-form">
+                        <input type="hidden" id="id" name="id" value="{{employee.id}}">
+    
+                        <div class="input-div">
+                            <label class="label" for="email">Email:</label>
+                            <input class="input" id="email" name="email" value = "{{employee.email}}" required>
+                        </div>
+                        <div class="input-div">
+                            <label class="label" for="username">Username:</label>
+                            <input class="input" id="username" name="username" value="{{employee.username}}" required">
+                        </div>
+                        <div class="input-div">
+                            <label class="label" for="first_name">First Name:</label>
+                            <input class="input" id="first_name" name="first_name" value="{{employee.first_name}}" required>
+                        </div>
+                        <div class="input-div">
+                            <label for="middle_name">Middle Name:</label>
+                            <input type="text" id="middle_name" name="middle_name" value="{{employee.middle_name}}" required">
+                        </div>
+                        <div class="input-div">
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" id="last_name" name="last_name" value="{{employee.last_name}}" required">
+                        </div>
+                        <div class="btn-div">
+                            <button  onclick="handleUpdateProfileClick(event)"> Update Profile </button>
+                        </div>
+                    </form>
 
-                    <input type="hidden" id="id" name="id" value="{{employee.id}}">
+                    <br>
+                    <h5>Change Password</h5>
+                    <br><br>
 
-                    <div>
-                        <label class="label" for="email">Email:</label>
-                        <input class="input" id="email" name="email" value = "{{employee.email}}" required>
-                    </div>
-                    <div>
-                        <label class="label" for="username">Username:</label>
-                        <input class="input" id="username" name="username" value="{{employee.username}}" required">
-                    </div>
-                    <div>
-                        <label class="label" for="first_name">First Name:</label>
-                        <input class="input" id="first_name" name="first_name" value="{{employee.first_name}}" required>
-                    </div>
-                    <div>
-                        <label for="middle_name">Middle Name:</label>
-                        <input type="text" id="middle_name" name="middle_name" value="{{employee.middle_name}}" required">
-                    </div>
-                    <div >
-                        <label for="last_name">Last Name:</label>
-                        <input type="text" id="last_name" name="last_name" value="{{employee.last_name}}" required">
-                    </div>
-                    
-                    <button  onclick="handleUpdateProfileClick(event)"> Update Profile </button>
-                </form>
-            </div>
+                    <form id = "change-password-form">
 
-            <div> 
-                <p> Change Password </p>
-
-                <form id = "change-password-form">
-
-                    <input type="hidden" id="id" name="id" value="{{employee.id}}">
-  
-                    <div>
-                        <label class="label" for="old_password"> Old Password:</label>
-                        <input class="input" id="old_password" name="old_password" required>
-                    </div>
-
-                    <div>
-                        <label class="label" for="new_password">New Password:</label>
-                        <input class="input" id="new_password" name="new_password" required>
-                    </div>
-
-                    <button onclick="handleChangePasswordClick(event)"> Change Password </button>
-                
-                </form>                
+                        <input type="hidden" id="id" name="id" value="{{employee.id}}">
+      
+                        <div class="input-div">
+                            <label class="label" for="old_password"> Old Password:</label>
+                            <input class="input" id="old_password" name="old_password" required>
+                        </div>
+    
+                        <div class="input-div">
+                            <label class="label" for="new_password">New Password:</label>
+                            <input class="input" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="btn-div">
+                            <button onclick="handleChangePasswordClick(event)"> Change Password </button>
+                        </div>
+                    </form>    
+                </div>
             </div>
         </div>
 

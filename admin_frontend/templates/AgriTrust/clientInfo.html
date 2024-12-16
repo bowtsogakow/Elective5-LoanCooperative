@@ -5,11 +5,28 @@
 
     <style>
         .client-info-div {
-            .client-info-cont {
+            .client-info-cont,
+            .loan-history-cont,
+            .payment-history-cont {
                 display: flex;
                 flex-direction: column;
                 flex-wrap: nowrap;
                 gap: 20px;
+
+                .loan-info-cont,
+                .payment-info-cont {
+                    display: flex;
+                    gap: 20px;
+                    cursor: pointer;
+                    transition: 0.3s ease-in-out;
+                    padding: 10px 5px;
+                    border-radius: 5px;
+                    white-space: nowrap;
+
+                    &:hover {
+                        background-color: rgba(0, 0, 0, 0.1);
+                    }
+                }
 
                 .client-info {
                     position: relative;
@@ -34,6 +51,7 @@
                         gap: 10px; 
                         min-width: 100px; 
                         max-width: fit-content; 
+                        white-space: nowrap; 
 
                         p {
                             margin: 0;
@@ -86,40 +104,34 @@
                 }
             }
 
-            .loan-history-cont {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-            }
-
             @media (max-width: 768px) {
 
-            /* Stack tables vertically on small screens */
-            table {
-                width: 100%;
-                margin: 10px 0;
+                /* Stack tables vertically on small screens */
+                table {
+                    width: 100%;
+                    margin: 10px 0;
+                }
+
+                th, td {
+                    font-size: 14px; /* Slightly smaller text for mobile screens */
+                    padding: 10px;
+                }
             }
 
-            th, td {
-                font-size: 14px; /* Slightly smaller text for mobile screens */
-                padding: 10px;
-            }
-        }
+            @media (max-width: 480px) {
+                /* Reduce font size further on very small screens */
+                .client-info-label {
+                    font-size: 60%;
+                }
 
-        @media (max-width: 480px) {
-            /* Reduce font size further on very small screens */
-            .client-info-label {
-                font-size: 60%;
-            }
+                span {
+                    padding: 10px 15px;
+                }
 
-            span {
-                padding: 10px 15px;
+                h3 {
+                    font-size: 18px;
+                }
             }
-
-            h3 {
-                font-size: 18px;
-            }
-        }
         }
     </style>
 
@@ -181,60 +193,118 @@
                 </div>
             </div>
 
-            <!-- loan info table  -->
+            <!-- loan info section  -->
             <div class="loan-history-div">
                 <br><br>
                 <h3> Loan History </h3> 
                 <div class="loan-history-cont cont">
-
-                    <table>
-                        <tr >
-                            <th> Loan ID </th>
-                            <th> Amount </th>
-                            <th> Interest Percentage </th>
-                            <th> Loan Term </th>
-                            <th> Total </th>
-                            <th> Date Created </th>
-                            <th> Date End </th>
-                            <th> Status </th>
-                        </tr>
-    
-                        {%for loan in loans%}
-                            <tr onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
-                                <td> {{loan.id}} </td>
-                                <td> {{loan.amount}} </td>
-                                <td> {{loan.interest_percentage}} </td>
-                                <td> {{loan.loan_term}} </td>
-                                <td> {{loan.total}} </td>
-                                <td> {{loan.date_created}} </td>
-                                <td> {{loan.date_end}} </td>
-                                <td> {{loan.status}} </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                    {%for loan in loans%}
+                        <div 
+                            class="loan-info-cont"
+                            onclick="window.location.href='{% url 'loan_info' loan.id %}';"
+                        >
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Amount 
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-coins"></i>
+                                    <p> ₱ {{loan.amount}} </p>
+                                </span>
+                            </div>
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Interest 
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    <p> {{loan.interest_percentage}}% </p>
+                                </span>
+                            </div>
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Loan Term 
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                    <p> {{loan.loan_term}} </p>
+                                </span>
+                            </div>
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Total Ammount
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-coins"></i>
+                                    <p> {{loan.total}} </p>
+                                </span>
+                            </div>
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Date Created
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <p> {{loan.date_created}} </p>
+                                </span>
+                            </div>
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Date End
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <p> {{loan.date_end}} </p>
+                                </span>
+                            </div>
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Loan Status
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <p> {{loan.status}} </p>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="line-div"></div>
+                    {% endfor %}
                 </div>
             </div>
 
-            <!-- Payments table -->
-            <div>
+            <!-- Payments section -->
+            <div class="payement-history-div">
+                <br><br>
                 <h3> Payments History </h3> 
                 
-                <table>
-                    <tr >
-                        <th> ID </th>
-                        <th> Amount </th>
-                        <th> Date </th>
-                    </tr>
-
+                <div class="payment-history-cont cont">
                     {%for payment in payments%}
-                        <tr>
-                            <td> {{payment.id}} </td>
-                            <td> {{payment.amount}} </td>
-                            <td> {{payment.date}} </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            
+                        <div 
+                            class="payment-info-cont"
+                        >       
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Date
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <p> {{payment.date}} </p>
+                                </span>
+                            </div>
+
+                            <div class="client-info">
+                                <div class="client-info-label">
+                                    Amount Paid
+                                </div>
+                                <span>
+                                    <i class="fa-solid fa-coins"></i>
+                                    <p> ₱ {{payment.amount}} </p>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="line-div"></div>
+                    {% endfor %}    
+                </div>
             </div>
 
         </div>
