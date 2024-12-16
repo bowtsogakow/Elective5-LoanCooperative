@@ -1,8 +1,10 @@
+import datetime
 import math
-from .models import ClientInfo, Loan, User
+from .models import ClientInfo, Loan, Payment, User
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Q
+from django.db.models import Sum
 
 @api_view(["GET"])
 def get_all_employees(request):
@@ -355,4 +357,21 @@ def change_employee_position(request):
             "status_message" : f"Error in updating position : {str(e)}"
         })
 
-       
+@api_view(["GET"])
+def get_dashboard_info(request): 
+    
+    clients = User.objects.filter(type = "client", is_active = True).count()
+    total_loaned_amount = Loan.objects.filter(status = "ongoing").aggregate(total = Sum('amount_loaned'))
+    
+    today = datetime.date.today()
+    total_payments = Payment.objects.filter(date = today).aggregate(total = Sum('amount'))
+
+    print(total_payments)
+
+    return Response({
+        "status" : 1,
+        "status_message" : "Dashboard info retrieved successfully",
+        "clients" : clients,
+        "total_loaned_amount" : total_loaned_amount["total"], 
+        "total_payments" : total_payments["total"]
+    })

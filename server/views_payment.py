@@ -1,8 +1,9 @@
 import datetime
+from django.utils import timezone
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from django.db.models import Sum
 from server.models import Loan, User, Payment 
 
 @api_view(["GET"])
@@ -95,4 +96,26 @@ def add_payment(request):
         "status" : 1, 
         "status_message": "Loan paid successfully",
         "remaining_balance" : loan.total - loan.total_amount_paid
+    })
+
+
+@api_view(["GET"])
+def get_payment_table(request):
+
+    result = []
+    for i in range(6, -1, -1):
+        days_ago = timezone.now() - datetime.timedelta(days=i)
+        payments = Payment.objects.filter(date=days_ago)
+        amount = 0
+        for payment in payments : 
+            amount = payment.amount + amount
+        result.append({
+            "date" : days_ago.strftime('%Y-%m-%d'),
+            "total_amount" : amount
+        })
+
+    return Response({
+        "status" : 0, 
+        "status_message" : "Success",
+        "result" : result
     })

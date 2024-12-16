@@ -1,8 +1,10 @@
-from .models import ClientInfo, Loan, User
+from .models import ClientInfo, Loan, Payment, User
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Q
 import math
+from django.utils import timezone
+import datetime
 
 
 # Not yet Tested
@@ -299,4 +301,26 @@ def get_eligible_clients_for_loan(request):
         "status" : 1,
         "status_message" : "Eligible clients were retrieved successfully",
         "clients" : sorted_response
+    })
+
+
+@api_view(["GET"])
+def get_client_registration_table(request):
+
+    result = []
+    for i in range(6, -1, -1):
+        days_ago = timezone.now() - datetime.timedelta(days=i)
+       
+        clients = User.objects.filter(type = "client", is_active = True, date_joined__date=days_ago).count()
+
+        result.append({
+            "date" : days_ago.strftime('%Y-%m-%d'),
+            "client_count" : clients
+        })
+
+        
+    return Response({
+        "status" : 0, 
+        "status_message" : "Success",
+        "result" : result
     })
