@@ -39,4 +39,13 @@ def index(request):
         "payments" : data_get_payment_by_client["payments"]
     })
 
+
+@client_required
+def profile_page(request):
+    id = request.user.id
+    path = reverse('server_get_employee_by_id', args=[id])
+    url = f"{base_url}{path}"
+    response = requests.get(url)
+    data = response.json()
+    return render(request, 'clients_frontend/profileInfo.html', {"client" : data["employee"]})
  

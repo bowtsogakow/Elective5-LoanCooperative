@@ -1,5 +1,10 @@
 <html>
     <body>
+        <!-- Div for displaying login result -->
+        <div id = "login-result"> 
+
+        </div>
+
         <form id = "login-form">
             <input type="text" name = "username" placeholder="username"> 
             <input type="text" name = "password" placeholder="password"> 
@@ -42,6 +47,11 @@
 
             if(login_status == 1){
                 window.location.href = "/"; 
+            }
+
+            if(login_status == 0){
+                const login_result = document.getElementById("login-result");
+                login_result.innerHTML = `<p style = "color : red"> Invalid credentials. Please try again! </p>`; 
             }
         }
 

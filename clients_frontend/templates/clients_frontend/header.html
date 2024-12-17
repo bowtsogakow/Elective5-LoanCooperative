@@ -44,7 +44,7 @@
             <div class="header-title"> Agri<span>Trust</span> </div>
             <div class="header-nav">
                 <a href = "{% url 'client_index'%}"> Home </a>
-                <a href = ""> {{user.full_name}} </a>
+                <a href = "{% url 'client_profile'%}"> {{user.full_name}} </a>
                 <a href = "{% url 'server_logout' %}"> Logout </a>
             </div>
         </div>

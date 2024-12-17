@@ -1,0 +1,103 @@
+<html>
+
+    <body> 
+        {% include 'cashier_frontend/header.html' with user=user %}
+
+        <div class="profile-info-div cont-body">
+            <div class="profile-info-cont cont">        
+                <h3> {{client.fullname}} </h3>
+               
+                <br>
+                
+                <div class="reg-div">
+                    <form id = "update-profile-form">
+                        <input type="hidden" id="id" name="id" value="{{client.id}}">
+    
+                        <div class="input-div">
+                            <label class="label" for="email">Email:</label>
+                            <input class="input" id="email" name="email" value = "{{client.email}}" required>
+                        </div>
+                        <div class="input-div">
+                            <label class="label" for="username">Username:</label>
+                            <input class="input" id="username" name="username" value="{{client.username}}" required">
+                        </div>
+                        <div class="input-div">
+                            <label class="label" for="first_name">First Name:</label>
+                            <input class="input" id="first_name" name="first_name" value="{{client.first_name}}" required>
+                        </div>
+                        <div class="input-div">
+                            <label for="middle_name">Middle Name:</label>
+                            <input type="text" id="middle_name" name="middle_name" value="{{client.middle_name}}" required">
+                        </div>
+                        <div class="input-div">
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" id="last_name" name="last_name" value="{{client.last_name}}" required">
+                        </div>
+                        <div class="btn-div">
+                            <button  onclick="handleUpdateProfileClick(event)"> Update Profile </button>
+                        </div>
+                    </form>
+                    
+                    <br>
+                    <p> Change Password </p>
+                    <br><br>
+                    
+                    <form id = "change-password-form">
+        
+                        <input type="hidden" id="id" name="id" value="{{client.id}}">
+        
+                        <div class="input-div">
+                            <label class="label" for="old_password"> Old Password:</label>
+                            <input class="input" id="old_password" name="old_password" required>
+                        </div>
+        
+                        <div class="input-div">
+                            <label class="label" for="new_password">New Password:</label>
+                            <input class="input" id="new_password" name="new_password" required>
+                        </div>
+        
+                        <div class="btn-div">
+                            <button onclick="handleChangePasswordClick(event)"> Change Password </button>
+                        </div>
+                    </form>
+                </div>
+            </div> 
+        </div>
+
+    </body>
+
+    <script>
+        async function handleUpdateProfileClick(event) {
+            event.preventDefault();
+            form = document.getElementById("update-profile-form");
+            formData = new FormData(form);
+
+            const response = await fetch("{% url 'server_update_employee' %}", {
+                method: "POST",
+                body: formData,
+                headers : {
+                    'X-CSRFToken': "{{csrf_token}}",
+                    "contrent-type": "application/json"
+                }
+            })
+
+
+        }
+
+        async function handleChangePasswordClick (params) {
+            event.preventDefault();
+            form = document.getElementById("change-password-form");
+            formData = new FormData(form);
+
+            const response = await fetch("{% url 'server_update_employee_password' %}", {
+                method: "POST",
+                body: formData,
+                headers : {
+                    'X-CSRFToken': "{{csrf_token}}",
+                    "contrent-type": "application/json"
+                }
+            })
+        }
+    </script> 
+
+</html>
