@@ -1,60 +1,194 @@
 <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+            :root {
+                --bg1: #28a745;
+                --bg2: #f8f9fa;
+                --bg3: #343a40;
+                --bg4: #ffffff;
+                --txt: #343a40;
+                --txt1: #6c757d;
+                --txt2: #007bff;
+                --txt3: #e9ecef;
+                --btn: #28a745;
+                --btn-hov: #1a7a30;
+            }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: var(--bg2);
+                color: var(--txt);
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+
+            .login-div {
+                background-color: var(--bg4);
+                border: 0 solid var(--txt1);
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                width: 300px;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .header-title {
+                font-weight: bold;
+                font-size: 2rem;
+                color: var(--txt);
+            }
+
+            .header-title span {
+                color: var(--bg1);
+            }
+
+            /* #login-form {
+                background-color: var(--bg4);
+                border: 0 solid var(--txt1);
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                width: 300px;
+            } */
+
+            .input-group {
+                position: relative;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .input-group label {
+                position: absolute;
+                top: -8px;
+                left: 10px;
+                background-color: white;
+                padding: 0 5px;
+                font-size: 0.9rem;
+                color: #555;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 1rem;
+                outline: none;
+            }
+
+            .input-group input:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            #login-form input,
+            #login-form select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--txt1);
+                border-radius: 5px;
+                font-size: 14px;
+            }
+
+            #login-form button {
+                width: 100%;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                background-color: var(--btn);
+                color: var(--bg4);
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            #login-form button:hover {
+                background-color: var(--btn-hov);
+            }
+
+            #login-result {
+                margin-top: 10px;
+                font-size: 14px;
+                text-align: center;
+            }
+        </style>
+    </head>
+
     <body>
-        <!-- Div for displaying login result -->
-        <div id = "login-result"> 
+        
+        <div class="login-div">
+            <header>
+                <div class="header-title">
+                    <p>Agri<span>Trust</span></p>
+                </div>
+            </header>
 
+            <div id="login-result"></div>
+            <br>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" placeholder="" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="" required>
+                </div>
+                <div class="input-group">
+                    <label for="type">User Type</label>
+                    <select name="type">
+                        <option value="client">Client</option>
+                        <option value="cashier">Cashier/Collector</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button onclick="handleLoginClick(event)">Submit</button>
+            </form>
         </div>
-
-        <form id = "login-form">
-            <input type="text" name = "username" placeholder="username"> 
-            <input type="text" name = "password" placeholder="password"> 
-            <select name = "type"> 
-                <option value="client">Client</option>
-                <option value="cashier">Cashier/Collector</option>
-                <option value="admin" >Admin</option>
-            </select>
-            <button onclick="handleLoginClick(event)"> Submit </button>
-        </form>
     </body>
 
     <script>
-        async function handleLoginClick(e){
-            e.preventDefault(); 
-            const form = document.getElementById("login-form")
-            const formData = new FormData(form); 
+        async function handleLoginClick(e) {
+            e.preventDefault();
+            const form = document.getElementById("login-form");
+            const formData = new FormData(form);
 
-            const response = await fetch("{% url 'server_login'%}", {
+            const response = await fetch("{% url 'server_login' %}", {
                 method: "POST",
                 body: formData,
-                headers : {
-                    'X-CSRFToken': "{{csrf_token}}"
+                headers: {
+                    'X-CSRFToken': "{{ csrf_token }}"
                 }
-            }) 
+            });
 
-            const data = await response.json()
+            const data = await response.json();
 
             const login_status = data.status;
 
-            console.log(data);
-
-            if(login_status == 3){
-                window.location.href = "{% url 'admin_index' %}"
+            if (login_status == 3) {
+                window.location.href = "{% url 'admin_index' %}";
             }
 
-            if(login_status == 2){
-                window.location.href = "{% url 'cashier_index' %}"
+            if (login_status == 2) {
+                window.location.href = "{% url 'cashier_index' %}";
             }
 
-            if(login_status == 1){
-                window.location.href = "/"; 
+            if (login_status == 1) {
+                window.location.href = "/";
             }
 
-            if(login_status == 0){
+            if (login_status == 0) {
                 const login_result = document.getElementById("login-result");
-                login_result.innerHTML = `<p style = "color : red"> Invalid credentials. Please try again! </p>`; 
+                login_result.innerHTML = `<p style="color: red">Invalid credentials. Please try again!</p>`;
             }
         }
-
-      
-    </script> 
-</html
+    </script>
+</html>
