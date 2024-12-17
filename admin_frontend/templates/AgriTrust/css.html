@@ -231,4 +231,41 @@
         margin-bottom: 10px;
     }
 
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+
+        button {
+            padding: 6px 10px;
+            background-color: transparent;
+            border: none;
+            border-radius: 3px;
+            font-weight: bold;
+            color: var(--bg1);
+            font-size: 12px;
+            cursor: pointer;
+            transition:  0.2s ease-in-out;
+
+            &:hover {
+                background-color: var(--btn-hov);
+            }
+        }
+
+        span {
+            font-size: 12px;
+            color: var(--txt);
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .filter-btn-div {
+            flex-direction: column;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
 </style>
