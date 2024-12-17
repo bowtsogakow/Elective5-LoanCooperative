@@ -4,33 +4,40 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Q
-from server.models import Loan, User
+from server.models import ClientInfo, Loan, User
 from django.db.models import F
 
 
 @api_view(["POST"])
 def add_loan(request): 
-    client_id = request.data.get("client_id")
+    client_name = request.data.get("client_name")
     loan_term = request.data.get("loan_term")
     amount_loaned = request.data.get("amount_loaned")
     interest_percentage = request.data.get("interest_percentage")
     interest_mode = request.data.get("interest_mode")
     type = "loan"
 
-    if not client_id or not loan_term or not amount_loaned or not interest_percentage or not interest_mode:
+    if not client_name or not loan_term or not amount_loaned or not interest_percentage or not interest_mode:
         return Response({
             "status" : 0,
             "status_message" : "Missing invalid input"
         })
 
-    client = User.objects.filter(id = client_id, type = "client").first()
+    client = User.objects.filter(full_name = client_name, type = "client").first()
+    clientInfo = ClientInfo.objects.filter(user = client).first()
 
     if not client : 
         return Response({
             "status" : 0,
             "status_message" : "Client does not exist"
         })
-
+    
+    if not clientInfo.co_maker or not clientInfo.billing_statement_electric or not clientInfo.billing_statement_water :
+        return Response({
+            "status" : 0,
+            "status_message" : "Please ensure that client had already completed their requirements"
+        })
+    
     loan = Loan.objects.filter(client = client, status = "ongoing").first()
 
     if loan : 

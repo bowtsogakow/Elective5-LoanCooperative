@@ -129,7 +129,7 @@ def employee_list_page(request):
 
   path = reverse('server_get_employee_by_search')
   url = f"{base_url}{path}"
-  response = requests.post(url, data={"pagination" : 1, "type" : "all", "permission" : permission})
+  response = requests.post(url, data={"pagination" : 1, "type" : "all", "permission" : permission, "id" : request.user.id})
   data = response.json()
   print(request.user.is_authenticated)
   return render(request, 'AgriTrust/employees.html', {"employees" : data["employees"], "permission" : permission})

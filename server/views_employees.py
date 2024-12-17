@@ -142,6 +142,9 @@ def delete_employee(request):
 
 @api_view(["POST"])
 def get_employee_by_search(request):
+    
+    id = request.data.get("id")
+    str_id = str(id)
     name = request.data.get("name", None)
     type = request.data.get("type")
     pagination = request.data.get("pagination")
@@ -191,10 +194,14 @@ def get_employee_by_search(request):
     number_display = 1
     for employee in employees :
         if  included - limit < i <= included :
-            print
+        
             if employee.type == "admin" and permission != "superadmin" : 
                 continue
-
+            
+            str_emp_id = str(employee.id)
+            if str_emp_id == str_id : 
+                continue
+            
             data = {
                 "id" : employee.id,
                 "number_display" : number_display,

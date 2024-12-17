@@ -10,6 +10,8 @@
             <div class="cont">
                 <h4> Add <span> Employee </span></h4>
 
+                <div id = "action-result"> </div>
+
                 <form id = "add-employee-form"> 
                     <div class="input-div">
                         <label class="label" for="email">Email:</label>
@@ -51,6 +53,8 @@
 
         <script>
 
+            {% include 'AgriTrust/script.html' %}
+
             const submitEmployeeForm = async (e) => {
                 e.preventDefault(); 
                 const form = document.getElementById("add-employee-form")
@@ -70,7 +74,11 @@
                 console.log(data)
 
                 if (data.status == 1) {
-                    window.location.href = "{% url 'client_list' %}"
+                    show_result_bar(true, "#action-result", data.status_message);
+                }
+
+                else {
+                    show_result_bar(false, "#action-result", data.status_message);
                 }
                 
             }

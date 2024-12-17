@@ -10,15 +10,17 @@
       <div class="cont">
         <h4> Add <span> Loan </span></h4>
 
+        <div id = "action-result"></div>
+
         <form method="POST" id = "addLoanForm">
           {% csrf_token %}
           <div class="input-div">
               <label for="client_id">Client Name:</label> 
-              <input list="options" id="client_id" name="client_id" placeholder="Search Client">
+              <input list="options" id="client_name" name="client_name" placeholder="Search Client">
     
               <datalist id="options">
                 {% for client in clients %}
-                  <option value="{{client.id}}"> {{client.fullname}}</option>
+                  <option value="{{client.fullname}}"> </option>
                 {%endfor%}
               </datalist>
           </div>
@@ -36,7 +38,12 @@
           </div>
           <div class="input-div">
               <label for="interest_percentage">Interest Percentage:</label>
-              <input id="interest_percentage" name="interest_percentage"  required></textarea>
+              <select id="interest_percentage" name="interest_percentage" required>
+                <option value=2.5> 2.5% </option>
+                <option value=5> 5% </option>
+                <option value=7.5> 7.5% </option>
+                <option value=10> 10% </option>
+              </select>
           </div>
           <div class="input-div">
               <label for="interest_mode">Interest Mode:</label>
@@ -54,6 +61,7 @@
     </div>
     
     <script>
+      {% include 'AgriTrust/script.html' %}
       const submitLoanForm = async (e) => {
         e.preventDefault(); 
         const form = document.getElementById("addLoanForm")
@@ -73,7 +81,11 @@
         console.log(data); 
 
         if (data.status == 1) {
-            window.location.href = "{% url 'loan_list' %}"
+          show_result_bar(true, "#action-result", data.status_message);
+        }
+
+        else {
+          show_result_bar(false, "#action-result", data.status_message);
         }
         
     }

@@ -10,6 +10,11 @@
             
             <div class="cont">
                 <h4> Add <span> Client </span> </h4>
+
+                <div id = "action-result"> 
+
+                </div>
+
                 <form method="POST" id = "addClientForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="input-div">
@@ -51,12 +56,13 @@
                     <div class="input-div">
                         <label for="co_maker">Co-Maker:</label>
                         <!-- <input type="text" id="co_maker" name="co_maker" required> -->
-                        <select name = "co_maker">
-                            <option value="">Select Co-Maker</option>
+                        <input list="options" id="co_maker" name="co_maker" placeholder="Search Co-Maker">
+                        
+                        <datalist id="options">
                             {% for co_maker in comakers %}
-                                <option value = "{{ co_maker.fullname }}">{{ co_maker.fullname }}</option>
+                                <option value = "{{ co_maker.fullname }}"></option>
                             {% endfor %}
-                        </select>
+                        </datalist>
                     </div>
                     <div class="input-div">
                         <label for="billing_statement_electric">Billing Statement (Electric):</label>
@@ -74,7 +80,7 @@
         </div>
 
         <script> 
-
+            {% include 'AgriTrust/script.html' %}
             const submitClientForm = async (e) => {
                 e.preventDefault(); 
                 const form = document.getElementById("addClientForm")
@@ -94,7 +100,11 @@
                 console.log(data); 
 
                 if (data.status == 1) {
-                    window.location.href = "{% url 'client_list' %}"
+                    show_result_bar(true, "#action-result", data.status_message);
+                }
+
+                else {
+                    show_result_bar(false, "#action-result", data.status_message);
                 }
                 
             }
