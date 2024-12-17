@@ -4,36 +4,106 @@
     {% include 'AgriTrust/css.html' %}
 
     <style>
-
         .header-div {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: var(--bg3);
             padding: 20px 40px;
+            position: relative; /* Ensures dropdown is positioned relative to header-div */
+        }
 
-            .header-title {
-                font-weight: bold;
-                font-size: 24px;
-                color: var(--bg2);
+        .header-title {
+            font-weight: bold;
+            font-size: 24px;
+            color: var(--bg2);
+        }
 
-                span {
-                    color: var(--bg1);
-                }
+        .header-title span {
+            color: var(--bg1);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--bg1);
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-nav a {
+            color: var(--bg1);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .header-nav a:hover {
+            color: var(--bg2);
+        }
+
+        /* Dropdown menu styling */
+        .dropdown-menu {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            position: absolute;
+            top: 60px; /* Positions dropdown below the hamburger */
+            right: 20px;
+            background-color: var(--bg3);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10; /* Ensures the menu stays on top */
+        }
+
+        .dropdown-menu a {
+            font-size: 16px;
+            color: var(--bg1);
+        }
+
+        .dropdown-menu a:hover {
+            color: var(--bg2);
+        }
+
+        /* Show hamburger menu and hide nav on small screens */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            /* Show dropdown when active */
+            .dropdown-menu.active {
+                display: flex;
+            }
+        }
+
+        /* Ensure menus are visible above the responsive dimensions */
+        @media (min-width: 769px) {
+            .hamburger {
+                display: none;
             }
 
             .header-nav {
                 display: flex;
-                gap: 20px;
-                
-                a {
-                    color: var(--bg1);
-                    font-weight: bold;
+            }
 
-                    &:hover {
-                        color: var(--bg2);
-                    }
-                }
+            .dropdown-menu {
+                display: none; /* Dropdown is hidden when not in small dimensions */
             }
         }
     </style>
@@ -42,13 +112,36 @@
 
         <div class="header-div">
             <div class="header-title"> Agri<span>Trust</span> </div>
+
+            <!-- Hamburger Menu Icon -->
+            <div class="hamburger" id="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <!-- Dropdown Navigation -->
             <div class="header-nav">
                 <a href = "{% url 'cashier_index' %}"> Home </a>
                 <a href = "{% url 'cashier_profile_info' user.id%}"> {{user.full_name}} </a>
                 <a href = "{% url 'server_logout' %}"> Logout </a>
             </div>
-        </div>
 
-        
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href = "{% url 'cashier_index' %}"> Home </a>
+                <a href = "{% url 'cashier_profile_info' user.id%}"> {{user.full_name}} </a>
+                <a href = "{% url 'server_logout' %}"> Logout </a>
+            </div>
+        </div>
     </header>
+
+    <script>
+        // Toggle dropdown menu visibility
+        const hamburger = document.getElementById('hamburger');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        hamburger.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+    </script>
 </main>
