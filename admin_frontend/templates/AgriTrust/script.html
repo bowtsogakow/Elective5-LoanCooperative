@@ -1,0 +1,19 @@
+
+
+function show_result_bar(isPositive, div, message){
+    console.log("Called")
+    const actionResult = document.querySelector(div); 
+    actionResult.innerHTML = `<p"> ${message} </p>`; 
+
+    if (isPositive == true){
+        console.log("called3")
+        actionResult.classList.remove("negative-result");
+        actionResult.classList.add("positive-result");
+    }
+
+    else {
+        actionResult.classList.remove("positive-result");
+        actionResult.classList.add("negative-result");
+    }
+
+}

@@ -28,6 +28,10 @@
             <div class="cont">
                 <div class="client-cont">
 
+                    <div id = "action-result"> 
+
+                    </div>
+
                     <div class="add-btn">
                         <button onclick="window.location.href='{% url 'client_add' %}';"> Add Client </button> 
                     </div>
@@ -84,6 +88,7 @@
 
 
         <script> 
+            {% include 'AgriTrust/script.html' %}
             var selected = 0; 
             var totalRows = 0;
             var selectedIds = [];
@@ -166,9 +171,22 @@
                     })
                 })
 
-                await response.json();
+                const data = await response.json();
 
-                return window.location.href = "{% url 'client_list' %}";
+                if (data.status == 1) {
+                    show_result_bar(true, "#action-result", data.status_message);
+                    document.querySelectorAll(".client-row").forEach(row => {
+                        if (row.children[0].children[0].checked == true) {
+                            row.remove();
+                        }
+                    })
+                }
+
+                if (data.status == 0) {
+                    show_result_bar(false, "#action-result", data.status_message);
+                }
+
+
 
             }
             
