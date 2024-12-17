@@ -77,6 +77,15 @@
 
                     <div class="filter-btn-div">
                         <p>Selected <span id = "selected-indicator"></span></p>
+                        <div class="pagination">
+                            <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">
+                                <i class="fa fa-angle-left"></i>
+                            </button>
+                            <span id="page-indicator"> 1 of 1 </span>
+                            <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">
+                                <i class="fa fa-angle-right"></i>
+                            </button>
+                        </div>
                         <div > 
                             <button onclick="handleDeleteClients()"> Delete Selected Clients </button> 
                         </div>
