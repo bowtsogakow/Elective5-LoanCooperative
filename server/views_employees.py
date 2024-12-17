@@ -126,8 +126,10 @@ def delete_employee(request):
         })
     
     for id in ids :
-        employee = User.objects.filter(id = id, type = "cashier" or "admin").first()
+        print(id)
+        employee = User.objects.filter(id = id).first()
         if not employee: 
+            print("Not exist")
             continue
         
         employee.delete()
@@ -135,11 +137,10 @@ def delete_employee(request):
 
     return Response({
         "status" : 1,
-        "status_message" : "Clients deleted successfully"
+        "status_message" : "Employees has been deleted successfully"
     })
 
 @api_view(["POST"])
-
 def get_employee_by_search(request):
     name = request.data.get("name", None)
     type = request.data.get("type")
@@ -190,7 +191,7 @@ def get_employee_by_search(request):
     number_display = 1
     for employee in employees :
         if  included - limit < i <= included :
-
+            print
             if employee.type == "admin" and permission != "superadmin" : 
                 continue
 
@@ -338,7 +339,7 @@ def change_employee_position(request):
         if employee.type == type : 
             return Response({
                 "status" : 1,
-                "status_message" : "Employee already has this position",
+                "status_message" : f"{employee.full_name} already has this position",
                 "type" : employee.type
             })
         
@@ -347,7 +348,7 @@ def change_employee_position(request):
 
         return Response({
             "status" : 1,
-            "status_message" : "Position updated successfully",
+            "status_message" : f"{employee.full_name} position has been change to {employee.type}",
             "type" : employee.type
         })
     

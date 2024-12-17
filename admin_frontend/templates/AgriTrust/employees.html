@@ -30,6 +30,10 @@
             <div class="cont">
                 <div class="employees-cont">
 
+                    <div id = "action-result"> 
+
+                    </div>
+
                     <div class="add-btn">
                         <button onclick="window.location.href='{% url 'employee_add' %}';"> Add Employee </button>
                     </div>
@@ -60,25 +64,27 @@
                             </tr>
 
                             {%for employee in employees%}
-                            <tr class = "employee-row">
-                                <td> <input type="checkbox" id = "select-row" onclick="handleCheckboxClick()" value = "{{employee.id}}"> </td>
-                                <td> {{employee.number_display}} </td>
-                                <td> {{employee.fullname}} </td>
-                                <td> {{employee.email}} </td>
-                                <td> {{employee.username}} </td>
-                                <td> {{employee.type}} </td>
-                                <td> 
-                                    <form id = "change-position-form" onsubmit="handleChangePosition(this, event)"> 
-                                        <input type="hidden" name = "id" value = "{{employee.id}}">
-                                        <select name = "type"> 
-                                            <option value = ""> Change position </option>
-                                            <option value = "cashier"> Cashier </option>
-                                            <option value = "admin"> Admin </option>
-                                        </select>
-                                        <input type = "submit"> 
-                                    </form>
-                                </td>
-                            </tr>
+                                {% if user.id != employee.id %} 
+                                    <tr class = "employee-row">
+                                        <td> <input type="checkbox" id = "select-row" onclick="handleCheckboxClick()" value = "{{employee.id}}"> </td>
+                                        <td> {{employee.number_display}} </td>
+                                        <td> {{employee.fullname}} </td>
+                                        <td> {{employee.email}} </td>
+                                        <td> {{employee.username}} </td>
+                                        <td> {{employee.type}} </td>
+                                        <td> 
+                                            <form id = "change-position-form" onsubmit="handleChangePosition(this, event)"> 
+                                                <input type="hidden" name = "id" value = "{{employee.id}}">
+                                                <select name = "type"> 
+                                                    <option value = ""> Change position </option>
+                                                    <option value = "cashier"> Cashier </option>
+                                                    <option value = "admin"> Admin </option>
+                                                </select>
+                                                <input type = "submit"> 
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                         </table>
                     </div>
@@ -96,6 +102,7 @@
 
 
         <script> 
+            {% include 'AgriTrust/script.html' %}
             var selected = 0; 
             var totalRows = 0;
             var selectedIds = [];
@@ -177,9 +184,20 @@
                     })
                 })
 
-                await response.json();
+                const data = await response.json();
 
-                return window.location.href = "{% url 'employee_list' %}";
+                if (data.status == 1) {
+                    show_result_bar(true, "#action-result", data.status_message);
+                    document.querySelectorAll(".employee-row").forEach(row => {
+                        if (row.children[0].children[0].checked == true) {
+                            row.remove();
+                        }
+                    })
+                }
+
+                else if (data.status == 0) {
+                    show_result_bar(false, "#action-result", data.status_message);
+                }
 
             }
             
@@ -214,10 +232,13 @@
                         <th> Email </th>
                         <th> Username </th>
                         <th> Type </th>
+                        <th> Action </th>
                     </tr>
                 `
 
                 for (employee of employees) {
+                    if (employee.id == '{{user.id}}') continue; 
+
                     table_body.innerHTML += `
                     <tr class = "employee-row">
                         <td> <input type="checkbox" id = "select-row" onclick="handleCheckboxClick()"> </td>
@@ -226,6 +247,17 @@
                         <td> ${employee.email} </td>
                         <td> ${employee.username} </td>
                         <td> ${employee.type} </td>
+                        <td> 
+                            <form id = "change-position-form" onsubmit="handleChangePosition(this, event)"> 
+                                <input type="hidden" name = "id" value = "${employee.id}">
+                                <select name = "type"> 
+                                    <option value = ""> Change position </option>
+                                    <option value = "cashier"> Cashier </option>
+                                    <option value = "admin"> Admin </option>
+                                </select>
+                                <input type = "submit"> 
+                            </form>
+                        </td>
                     </tr>
                     `
                 }
@@ -250,10 +282,15 @@
                 console.log(data);
 
                 if (data.status == 1){
+                    show_result_bar(true, "#action-result", data.status_message);
                     var row = form.closest("tr");
                     var employeeTypeTd = row.querySelectorAll("td")[5]; 
                     employeeTypeTd.innerHTML = data.type;
 
+                }
+
+                else{
+                    show_result_bar(false, "#action-result", data.status_message);
                 }
 
 
