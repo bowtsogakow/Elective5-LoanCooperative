@@ -31,7 +31,7 @@ ip = get_local_ip()
 ALLOWED_HOSTS = [
     ip,
     "localhost",
-    "31d7-115-146-191-14.ngrok-free.app",
+    "b97f-115-146-191-14.ngrok-free.app",
     "127.0.0.1"
 ]
 
