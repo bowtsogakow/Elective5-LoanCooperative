@@ -49,30 +49,32 @@
                     </div>
                     
                     <div>
-                        <table id = "client-table-body" class="table table-bordered table-hover table-responsive selectable-row"> 
-                            <tr> 
-                                <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
-                                <th> ID </th>
-                                <th>Client Name</th>
-                                <th> Contact Number </th>
-                                <th> Address </th>
-                                <th> Has Loan </th>
-                            </tr>
-                                
-                                {%for client in clients%}
-                                <tr 
-                                    class="client-row"
-                                    onclick='redirectToClientInfo(event, {{client.id}})'
-                                >   
-                                    <td> <input type="checkbox" name="client_ids" value="{{client.id}}" onclick="handleCheckboxClick()"> </td>
-                                    <td> {{client.number_display}} </td>
-                                    <td class="client-name"> {{client.fullname}} </td>
-                                    <td> {{client.contact_number}} </td>
-                                    <td> {{client.address}} </td>
-                                    <td> {{client.has_loan}} </td>
+                        <div class="table-div">
+                            <table id = "client-table-body" class="table table-bordered table-hover table-responsive selectable-row"> 
+                                <tr> 
+                                    <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
+                                    <th> ID </th>
+                                    <th>Client Name</th>
+                                    <th> Contact Number </th>
+                                    <th> Address </th>
+                                    <th> Has Loan </th>
                                 </tr>
-                                {% endfor %}
-                        </table>
+                                    
+                                    {%for client in clients%}
+                                    <tr 
+                                        class="client-row"
+                                        onclick='redirectToClientInfo(event, {{client.id}})'
+                                    >   
+                                        <td> <input type="checkbox" name="client_ids" value="{{client.id}}" onclick="handleCheckboxClick()"> </td>
+                                        <td> {{client.number_display}} </td>
+                                        <td class="client-name"> {{client.fullname}} </td>
+                                        <td> {{client.contact_number}} </td>
+                                        <td> {{client.address}} </td>
+                                        <td> {{client.has_loan}} </td>
+                                    </tr>
+                                    {% endfor %}
+                            </table>
+                        </div>
                     </div>
 
                     <div class="filter-btn-div">
