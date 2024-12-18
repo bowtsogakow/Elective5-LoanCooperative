@@ -5,9 +5,11 @@
 
         <div class="profile-info-div cont-body">
             <div class="profile-info-cont cont">        
-                <!-- <h3> {{employee.fullname}} </h3> -->
-                <h3> Juan Dela Cruz </h3>
-                <br>
+                <h3> {{employee.fullname}} </h3>
+                
+                <div id = "action-result"> 
+
+                </div>
                 
                 <div class="reg-div">
                     <form id = "update-profile-form">
@@ -67,6 +69,9 @@
     </body>
 
     <script>
+
+        {% include 'AgriTrust/script.html'%}
+
         async function handleUpdateProfileClick(event) {
             event.preventDefault();
             form = document.getElementById("update-profile-form");
@@ -79,7 +84,18 @@
                     'X-CSRFToken': "{{csrf_token}}",
                     "contrent-type": "application/json"
                 }
-            })
+            }); 
+
+            const data = await response.json();
+            console.log(data)
+           
+            if (data.status == 1) {
+                show_result_bar(true, "#action-result", data.status_message);
+            }
+
+            if (data.status == 0) {
+                show_result_bar(false, "#action-result", data.status_message);
+            }
 
 
         }
@@ -97,6 +113,16 @@
                     "contrent-type": "application/json"
                 }
             })
+
+            const data = await response.json();
+
+            if (data.status == 1) {
+                show_result_bar(True, "#action-result", data.status_message);
+            }
+
+            if (data.status == 0) {
+                show_result_bar(False, "#action-result", data.status_message);
+            }
         }
     </script> 
 

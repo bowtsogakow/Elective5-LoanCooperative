@@ -39,13 +39,24 @@
                     <div class="filter-btn-div">
                         <div class="search-cont">
                             <i class="fa fa-search"></i>
-                            <input type="text" oninput="handleSearchClient()" id="search-client" placeholder="Search Client"> 
+                            <input type="text" oninput="handleSearchClient(1)" id="search-client" placeholder="Search Client"> 
                         </div>
-                        <select id = "has-loan-select" oninput="handleSearchClient()"> 
+
+                        <select id = "has-loan-select" oninput="handleSearchClient(1)"> 
                             <option value="all"> All </option>
                             <option value="has-loan"> Has Loan </option>
                             <option value="has-no-loan"> Has No Loan </option>
                         </select>
+
+                        <select id = "order-select" oninput = "handleSearchClient(1)"> 
+                            <option value="asc"> Ascending </option>
+                            <option value="desc"> Descending </option>
+                        </select> 
+                        
+                        <select id = "sort-select" oninput = ""> 
+                            <option value="client_name"> Client Name </option>
+                        </select>
+
                     </div>
                     
                     <div>
@@ -83,8 +94,8 @@
                             <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">
                                 <i class="fa fa-angle-left"></i>
                             </button>
-                            <span id="page-indicator"> 1 of 1 </span>
-                            <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">
+                            <span id="page-indicator"> </span>
+                            <button type="button" onclick="handleNextPage()" class="btn btn-primary">
                                 <i class="fa fa-angle-right"></i>
                             </button>
                         </div>
@@ -103,12 +114,15 @@
             var selected = 0; 
             var totalRows = 0;
             var selectedIds = [];
+            var currentPage = 1; 
+            var totalPage = {{ total_page }};
 
             function getTotalRows () {
+                totalRows = 0; 
                 document.querySelectorAll(".client-row").forEach(row => {
                     totalRows++; 
                 })
-                console.log(selectedIds);
+                setSelectedMarker(); 
             }
 
             function setSelectedMarker(){
@@ -201,7 +215,7 @@
 
             }
             
-            async function handleSearchClient() {
+            async function handleSearchClient(page) {
                 
                 const response = await fetch("{% url 'server_get_client_by_search' %}", {
                     method: 'POST',
@@ -211,48 +225,80 @@
                     },
                     body: JSON.stringify({
                         'name': document.getElementById("search-client").value,
-                        'pagination' : 1, 
-                        'loan_status' : document.getElementById("has-loan-select").value
+                        'pagination' : page, 
+                        'loan_status' : document.getElementById("has-loan-select").value, 
+                        'order' : document.getElementById("order-select").value,
                     })
                 })    
 
                 const data = await response.json();
-                console.log(data);
-                const clients = data["clients"];
                 
-                var table_body = document.getElementById("client-table-body");
-                table_body.innerHTML = "";
-                
-                table_body.innerHTML += `
-                    <tr>
-                        <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
-                        <th> ID </th>
-                        <th>Client Name</th>
-                        <th> Contact Number </th>
-                        <th> Address </th>
-                        <th> Has Loan </th>
-                    </tr>
-                `
+                if (data.status == 1) {
+                    const clients = data["clients"];
+                    
+                    currentPage = data.pagination; 
+                    totalPage = data.total_page;
 
-                for (client of clients) {
+                    var table_body = document.getElementById("client-table-body");
+                    table_body.innerHTML = "";
+                    
                     table_body.innerHTML += `
-                    <tr 
-                        class="client-row"
-                        onclick='redirectToClientInfo(event, ${client.id})'
-                    >   
-                        <td> <input type="checkbox" name="client_ids" value="${client.id}" onclick="handleCheckboxClick()"> </td>
-                        <td> ${client.number_display} </td>
-                        <td class="client-name"> ${client.fullname} </td>
-                        <td> ${client.contact_number} </td>
-                        <td> ${client.address} </td>
-                        <td> ${client.has_loan} </td>
-                    </tr>
+                        <tr>
+                            <th> <input type="checkbox" id="select-all" onclick="handleSelectAllClick()"> </th>
+                            <th> ID </th>
+                            <th>Client Name</th>
+                            <th> Contact Number </th>
+                            <th> Address </th>
+                            <th> Has Loan </th>
+                        </tr>
                     `
+
+                    for (client of clients) {
+                        table_body.innerHTML += `
+                        <tr 
+                            class="client-row"
+                            onclick='redirectToClientInfo(event, ${client.id})'
+                        >   
+                            <td> <input type="checkbox" name="client_ids" value="${client.id}" onclick="handleCheckboxClick()"> </td>
+                            <td> ${client.number_display} </td>
+                            <td class="client-name"> ${client.fullname} </td>
+                            <td> ${client.contact_number} </td>
+                            <td> ${client.address} </td>
+                            <td> ${client.has_loan} </td>
+                        </tr>
+                        `
+                    }
+
+                    updatePaginationDisplay();
+                    getTotalRows();
+                
                 }
             }
 
+            function handlePreviousPage(){
+                if (currentPage > 1){
+                    currentPage--;
+                    handleSearchClient(currentPage);
+                }
+
+            }
+
+            function handleNextPage(){
+                if (currentPage < totalPage){
+                    currentPage++;
+                    handleSearchClient(currentPage);
+                }
+
+            }
+
+            function updatePaginationDisplay(){
+                const page_indicator = document.getElementById("page-indicator");
+                page_indicator.innerHTML = currentPage + " of " + totalPage;
+            }
+
+
             getTotalRows();
-            setSelectedMarker();
+            updatePaginationDisplay();
         </script> 
 
     </body>

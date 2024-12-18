@@ -15,4 +15,4 @@ def profile_page(request, id):
   url = f"{base_url}{path}"
   response = requests.get(url)
   data = response.json()
-  return render(request, 'cashier_frontend/profileInfo.html', {"cashier" : data["employee"]})
+  return render(request, 'cashier_frontend/profileInfo.html', {"employee" : data["employee"]})

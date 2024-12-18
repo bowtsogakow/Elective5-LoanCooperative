@@ -45,7 +45,11 @@ def client_list_page(request):
   url = f"{base_url}{path}"
   response = requests.post(url, data={"pagination" : 1, "loan_status" : "both"})
   data = response.json()
-  return render(request, 'AgriTrust/clients.html', {"clients" : data["clients"]})
+  return render(request, 'AgriTrust/clients.html', {
+    "clients" : data["clients"],
+    "total_page" : data["total_page"],
+    "pagination" : data["pagination"]
+    })
 
 @admin_required
 def client_info_page(request, id): 
@@ -86,7 +90,7 @@ def loan_list_page(request):
   url = f"{base_url}{path}"
   response = requests.post(url)
   data = response.json()
-  return render(request, 'AgriTrust/loans.html', {"loans" : data["loans"]})
+  return render(request, 'AgriTrust/loans.html', {"loans" : data["loans"], "total_page" : data["total_page"]})
 
 @admin_required
 def loan_info_page(request, id): 
@@ -129,10 +133,15 @@ def employee_list_page(request):
 
   path = reverse('server_get_employee_by_search')
   url = f"{base_url}{path}"
-  response = requests.post(url, data={"pagination" : 1, "type" : "all", "permission" : permission})
+  response = requests.post(url, data={"pagination" : 1, "type" : "all", "permission" : permission, "id" : request.user.id})
   data = response.json()
   print(request.user.is_authenticated)
-  return render(request, 'AgriTrust/employees.html', {"employees" : data["employees"], "permission" : permission})
+  return render(request, 'AgriTrust/employees.html', {
+    "employees" : data["employees"], 
+    "permission" : permission, 
+    "total_page" : data["total_page"],
+    
+    })
 
 @admin_required
 def add_employee_page(request):
