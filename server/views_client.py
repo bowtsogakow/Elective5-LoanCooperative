@@ -44,11 +44,11 @@ def add_client(request):
     try : 
     
         user = User(
-            email = email,
-            username = username,
-            first_name = first_name,
-            middle_name = middle_name,
-            last_name = last_name,
+            email = email.strip(),
+            username = username.strip(),
+            first_name = first_name.strip(),
+            middle_name = middle_name.strip(),
+            last_name = last_name.strip(),
             type = type
         )
 
@@ -60,9 +60,9 @@ def add_client(request):
 
             client = ClientInfo(
                 user = user,
-                address = address,
-                contact_no = contact_no,
-                business = business,
+                address = address.strip(),
+                contact_no = contact_no.strip(),
+                business = business.strip(),
                 co_maker = co_maker_object,
                 billing_statement_electric = billing_statement_electric,
                 billing_statement_water = billing_statement_water,
@@ -172,6 +172,7 @@ def get_clients_by_search(request):
     name = request.data.get("name", None)
     loan_status = request.data.get("loan_status")
     pagination = request.data.get("pagination")
+    order = request.data.get("order")
     limit = 25
 
     if not loan_status: 
@@ -179,6 +180,9 @@ def get_clients_by_search(request):
             "status" : 0, 
             "status_message" : "Invalid Input"
         })
+    
+    if not order : 
+        order = "asc"
     
     
     conditions = Q()
@@ -194,7 +198,13 @@ def get_clients_by_search(request):
     elif loan_status == "has-no-loan": 
         conditions &= Q(has_loan = False) 
 
-    clients = User.objects.filter(conditions).prefetch_related("ClientInfos")
+    if order == "asc" :
+        order_by = "full_name"
+    
+    elif order == "desc" : 
+        order_by = "-full_name"
+
+    clients = User.objects.filter(conditions).order_by(order_by).prefetch_related("ClientInfos")
     total_count = clients.count()
     total_page = total_count/limit
 
@@ -208,14 +218,11 @@ def get_clients_by_search(request):
     else :
         pagination = 1 
         included = limit
-    
-    print(type(included))
-    print(type(pagination))
 
     response = []
 
     i = 1 
-    number_display = 1
+    number_display = 1 + ((int(pagination) -1) * limit)
     for client in clients :
         if  included - limit < i <= included :
         

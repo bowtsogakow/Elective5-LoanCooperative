@@ -185,7 +185,7 @@ def get_loan_by_code(request):
             "status_message" : "QR code is required"
         })
     
-    loan = Loan.objects.filter(qr_code = qr_code).first()
+    loan = Loan.objects.filter(qr_code = qr_code, status = "ongoing").first()
 
     if not loan : 
         return Response({
@@ -310,7 +310,7 @@ def get_loans_by_search(request):
     response = []
 
     i = 1 
-    number_display = 1
+    number_display = 1 + ( (int(pagination) - 1) * limit)
 
     for loan in loans : 
         if included - limit < i <= included :

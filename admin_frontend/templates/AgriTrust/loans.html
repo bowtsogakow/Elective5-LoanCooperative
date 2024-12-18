@@ -35,23 +35,23 @@
 
 
                 <div class="filter-btn-div">
-                    <div class="search-cont" oninput = "handleSearchLoan()">
+                    <div class="search-cont" oninput = "handleSearchLoan(1)">
                         <i class="fa fa-search"></i>
                         <input type="text" oninput="" id="search-client" placeholder="Search Client"> 
                     </div>
                     
-                    <select id = "status-select" oninput = "handleSearchLoan()"> 
+                    <select id = "status-select" oninput = "handleSearchLoan(1)"> 
                         <option value="all"> All </option>
                         <option value="ongoing"> Ongoing </option>
                         <option value="completed"> Completed </option>
                     </select>
 
-                    <select id = "order-select" oninput = "handleSearchLoan()"> 
+                    <select id = "order-select" oninput = "handleSearchLoan(1)"> 
                         <option value="asc"> Ascending </option>
                         <option value="desc"> Descending </option>
                     </select> 
                     
-                    <select id = "sort-select" oninput = "handleSearchLoan()"> 
+                    <select id = "sort-select" oninput = "handleSearchLoan(1)"> 
                         <option value="client_name"> Client Name </option>
                         <option value="amount_loaned"> Amount Loaned </option>
                         <option value="total_amount"> Total Amount </option>
@@ -80,7 +80,7 @@
                         </tr>
                         {%for loan in loans%}
                             <tr  onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
-                                <td> {{loan.id}} </td>
+                                <td> {{loan.number_display}} </td>
                                 <td> {{loan.client_name}} </a> </td>
                                 <td> {{loan.amount_loaned}} </td>
                                 <td> {{loan.total_amount}} </td>
@@ -97,18 +97,40 @@
             
                 
                 </div>
+
+
+                <div class="filter-btn-div">
+                    <p>Selected <span id = "selected-indicator"></span></p>
+                    <div class="pagination">
+                        <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">
+                            <i class="fa fa-angle-left"></i>
+                        </button>
+                        <span id="page-indicator"> </span>
+                        <button type="button" onclick="handleNextPage()" class="btn btn-primary">
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                    <div > 
+                        <button onclick="handleDeleteClients()"> Delete Selected Clients </button> 
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
     </body>
 
     <script> 
 
+        var currentPage = 1; 
+        var totalPage = {{ total_page }};
+
         function redirectToLoanInfo(id){
             window.location.href = "loans/" + id;
         }
 
-        async function handleSearchLoan() {
+        async function handleSearchLoan(page) {
             
             const response = await fetch("{% url 'server_get_loans_by_search' %}", {
                 method: 'POST',
@@ -118,7 +140,7 @@
                 },
                 body: JSON.stringify({
                     'name': document.getElementById("search-client").value,
-                    'pagination' : 1, 
+                    'pagination' : page, 
                     'status' : document.getElementById("status-select").value,
                     'order' : document.getElementById("order-select").value,
                     'sort' : document.getElementById("sort-select").value
@@ -126,6 +148,11 @@
             })    
 
             const data = await response.json();
+
+            
+            currentPage = data.pagination; 
+            totalPage = data.total_page;
+
             const loans = data.loans;
             const table = document.getElementById("loan-table");
             table.innerHTML = `
@@ -161,7 +188,33 @@
                     </tr>
                 `
             }
+
+            updatePaginationDisplay(); 
         }
+
+        function handlePreviousPage(){
+                if (currentPage > 1){
+                    currentPage--;
+                    handleSearchLoan(currentPage);
+                }
+
+            }
+
+            function handleNextPage(){
+                console.log("click");
+                if (currentPage < totalPage){
+                    currentPage++;
+                    handleSearchLoan(currentPage);
+                }
+
+            }
+
+            function updatePaginationDisplay(){
+                const page_indicator = document.getElementById("page-indicator");
+                page_indicator.innerHTML = currentPage + " of " + totalPage;
+            }
+
+            updatePaginationDisplay();
             
     </script>
 </html>

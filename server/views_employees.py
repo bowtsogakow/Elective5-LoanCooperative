@@ -149,6 +149,7 @@ def get_employee_by_search(request):
     type = request.data.get("type")
     pagination = request.data.get("pagination")
     permission = request.data.get("permission")
+    order = request.data.get("order")
     limit = 25
 
     if not type and not (type == "admin" or type == "cashier" or type == "all"): 
@@ -157,6 +158,8 @@ def get_employee_by_search(request):
             "status_message" : "Invalid Input"
         })
     
+    if not order : 
+        order = "asc"
     
     conditions = Q()
 
@@ -172,9 +175,16 @@ def get_employee_by_search(request):
     elif type == "all":
         conditions &= ~Q(type = "client")
 
-    employees = User.objects.filter(conditions)
+    if order == "asc":
+        order_by = "full_name"
 
-    total_count = employees.count()
+    elif order == "desc":
+        order_by = "-full_name"
+
+
+    employees = User.objects.filter(conditions).order_by(order_by)
+
+    total_count = employees.count() - 1
     total_page = total_count/limit
 
     if total_page % 1 != 0:
@@ -191,7 +201,7 @@ def get_employee_by_search(request):
     response = []
 
     i = 1 
-    number_display = 1
+    number_display = 1 + (( int(pagination) - 1 ) * limit) 
     for employee in employees :
         if  included - limit < i <= included :
         
@@ -251,19 +261,19 @@ def update_employee(request):
     try : 
 
         if email : 
-            employee.email = email
+            employee.email = email.strip()
         
         if username : 
-            employee.username = username
+            employee.username = username.strip()
         
         if first_name : 
-            employee.first_name = first_name
+            employee.first_name = first_name.strip()
             
         if middle_name:    
-            employee.middle_name = middle_name
+            employee.middle_name = middle_name.strip()
             
         if last_name:     
-            employee.last_name = last_name
+            employee.last_name = last_name.strip()
 
         employee.save()
 
@@ -301,13 +311,13 @@ def update_employee_password(request):
     
     try : 
 
-        if employee.check_password(old_password) == False : 
+        if employee.check_password(old_password.strip()) == False : 
             return Response({
                 "status" : 0,
                 "status_message" : "Old password is incorrect"
             })
 
-        employee.set_password(new_password)
+        employee.set_password(new_password.strip())
         employee.save()
 
         return Response({

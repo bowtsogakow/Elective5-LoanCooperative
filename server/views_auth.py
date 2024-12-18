@@ -22,7 +22,7 @@ def server_login(request):
             "status_message" : "Invalid input"
         })
      
-    user = authenticate(request, username=username, password=password)
+    user = authenticate(request, username=username.strip(), password=password.strip())
     
     if not user : 
         return Response({
