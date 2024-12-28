@@ -64,22 +64,6 @@
                 </div>
 
                 <div>
-<<<<<<< HEAD
-                    <div class="table-div">
-                        <table id = "loan-table" class="table table-bordered table-hover table-responsive selectable-row"> 
-                            <tr> 
-                                <th> ID </th>
-                                <th> Client Name</th>
-                                <th> Amount Loaned </th>
-                                <th> Total Amount </th>
-                                <th> Status </th>
-                                <th> Start Date </th>
-                                <th> End Date </th>
-                                <th> Remaining Balance </th>
-                                <th> Daily Payment </th>
-                                <th> Days Left </th>
-                                <th> Days Ahead/Behind (+/-) </th>
-=======
                     <table id = "loan-table" class="table table-bordered table-hover table-responsive selectable-row"> 
                         <tr> 
                             <th> ID </th>
@@ -107,30 +91,15 @@
                                 <td> {{loan.daily_payment}} </td>
                                 <td> {{loan.days_left}} </td>
                                 <td> {{loan.payment_position}} </td>
->>>>>>> 07dd559966f708713acd539f98ed557e3342bd12
-                            </tr>
-                            {%for loan in loans%}
-                                <tr  onclick = "window.location.href='{% url 'loan_info' loan.id %}';">
-                                    <td> {{loan.id}} </td>
-                                    <td> {{loan.client_name}} </a> </td>
-                                    <td> {{loan.amount_loaned}} </td>
-                                    <td> {{loan.total_amount}} </td>
-                                    <td> {{loan.status}} </td>
-                                    <td> {{loan.start_date}} </td>
-                                    <td> {{loan.end_date}} </td>
-                                    <td> {{loan.remaining_balance}} </td>
-                                    <td> {{loan.daily_payment}} </td>
-                                    <td> {{loan.days_left}} </td>
-                                    <td> {{loan.payment_position}} </td>
-                                </tr>
-                            {% endfor %}
+                            </tr>   
+                        {% endfor %}
                         </table>
                     </div>
                 
                 </div>
 
 
-                <div class="filter-btn-div">
+                <div class="filter-btn-div two">
                     <p>Selected <span id = "selected-indicator"></span></p>
                     <div class="pagination">
                         <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">

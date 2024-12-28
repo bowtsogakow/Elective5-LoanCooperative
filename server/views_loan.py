@@ -384,7 +384,7 @@ def get_latest_loan_by_client(request, client_id):
         "payment_position" : loan.days_paid - (datetime.date.today() - loan.date_created).days,
         "daily_payment" : loan.daily_payment,
         "interest" : loan.interest,
-        "qrcode" : loan.qr_code, 
+        "qr_code" : loan.qr_code, 
         "progress" : progress
     }
 

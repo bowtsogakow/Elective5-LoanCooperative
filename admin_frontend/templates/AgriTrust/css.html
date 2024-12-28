@@ -103,7 +103,13 @@
     .filter-btn-div {
         display: flex;
         gap: 10px;
-        justify-content: space-between; 
+        justify-content: left; 
+    }
+
+    .two {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
     }
         
     /* Universal Search Style */
@@ -266,12 +272,19 @@
         }
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 643px) {
         .filter-btn-div {
+            display: flex;
             flex-direction: column;
             gap: 5px;
-            justify-content: center;
+        }
+
+        .two {
             align-items: center;
+        }
+        
+        .search-cont {
+            max-width: 100%;
         }
     }
 
