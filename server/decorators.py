@@ -13,10 +13,21 @@ def admin_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect("login_page")
-        if request.user.is_authenticated and request.user.type == 'admin':
-            return view_func(request, *args, **kwargs)
-        else:
-            return HttpResponseForbidden("You do not have permission to access this page.")
+        
+        elif request.user.is_authenticated : 
+
+            if request.user.type == 'admin':
+                return view_func(request, *args, **kwargs)
+            
+            elif request.user.type == 'client':
+                return redirect("client_index")
+            
+            elif request.user.type == 'cashier':
+                return redirect("cashier_index")
+            
+            else:
+                return HttpResponseForbidden("You do not have permission to access this page.")
+
     return _wrapped_view
 
 
@@ -25,10 +36,20 @@ def client_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect("login_page")
-        if request.user.is_authenticated and request.user.type == 'client':
-            return view_func(request, *args, **kwargs)
-        else:
-            return HttpResponseForbidden("You do not have permission to access this page.")
+        
+        if request.user.is_authenticated : 
+            
+            if request.user.type == 'client':
+                return view_func(request, *args, **kwargs)
+            
+            elif request.user.type == 'admin':
+                return redirect("admin_index")
+            
+            elif request.user.type == 'cashier':
+                return redirect("cashier_index")
+            
+            else:
+                return HttpResponseForbidden("You do not have permission to access this page.")
     return _wrapped_view
 
 def cashier_required(view_func):
@@ -36,8 +57,18 @@ def cashier_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect("login_page")
-        if request.user.is_authenticated and request.user.type == 'cashier':
-            return view_func(request, *args, **kwargs)
-        else:
-            return HttpResponseForbidden("You do not have permission to access this page.")
+        
+        if request.user.is_authenticated :
+
+            if request.user.type == 'cashier':
+                return view_func(request, *args, **kwargs)
+            
+            elif request.user.type == 'admin':
+                return redirect("admin_index")
+
+            elif request.user.type == 'client':
+                return redirect("client_index")
+            
+            else:
+                return HttpResponseForbidden("You do not have permission to access this page.")
     return _wrapped_view
