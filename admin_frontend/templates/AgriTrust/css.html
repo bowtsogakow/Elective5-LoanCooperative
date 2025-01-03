@@ -52,9 +52,16 @@
         padding: 40px;
         background-color: var(--bg4);
         border-radius: 5px;
+        
         overflow: hidden;
         overflow-y: auto;
         overflow-x: auto;
+        
+        .table-div {
+            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
 
         .selectable-row {
             tr {
@@ -96,7 +103,13 @@
     .filter-btn-div {
         display: flex;
         gap: 10px;
-        justify-content: space-between; 
+        justify-content: left; 
+    }
+
+    .two {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
     }
         
     /* Universal Search Style */
@@ -259,12 +272,19 @@
         }
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 643px) {
         .filter-btn-div {
+            display: flex;
             flex-direction: column;
             gap: 5px;
-            justify-content: center;
+        }
+
+        .two {
             align-items: center;
+        }
+        
+        .search-cont {
+            max-width: 100%;
         }
     }
 

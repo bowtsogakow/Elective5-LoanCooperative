@@ -227,18 +227,24 @@
                             </div>
                         
                         </div>
-      
+                        
                         <div class="card qr-section-client">
                             <h2 style=" color: '#1a365d'; margin-bottom : '10px' ">Scan to Pay</h2>
                             <div class="qr-code-client">
-                                <QRCodeSVG value={loanData.paymentLink} size={200} /> <!-- Change with canvs-->
+                                <canvas id="qrcode-image">  </canvas>
                             </div>
                             <p style=" color: '#718096'; text-align: 'center' ">
                                 Scan this QR code to make your payment
                             </p>
                         </div>
-
+                        
                     </div>
+
+                    {% else %}
+                        <div class="header">
+                            <p> You currently have no active loan</p>
+                        </div>
+                    {% endif %}
 
                     <!-- loan info section  -->
                     <div class="loan-history-div">
@@ -354,16 +360,32 @@
                             {% endfor %}    
                         </div>
                     </div>
-              
-                {% else %}
-                    <div class="header">
-                        <p> You currently have no active loan</p>
-                    </div>
-                {% endif %}
-
             </div>
 
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+        <script>
+            const setQrCode = () => {
+                const qrcode = '{{ loan.qr_code }}';
+                const qrcodeContainer = document.getElementById("qrcode-image");
+
+                console.log(qrcode);
+                console.log(qrcodeContainer);
+                QRCode.toCanvas(qrcodeContainer, qrcode, { width: 200, errorCorrectionLevel: 'H' }, function (error) {
+                    if (error) {
+                        console.error(error);
+                        alert("Failed to generate QR code.");
+                    } else {
+                        console.log("QR Code generated successfully!");
+                    }
+                });
+
+            }
+
+            setQrCode();
+
+        </script>
     </body>
 </html>
 

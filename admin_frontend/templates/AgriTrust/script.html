@@ -3,7 +3,7 @@
 function show_result_bar(isPositive, div, message){
     console.log("Called")
     const actionResult = document.querySelector(div); 
-    actionResult.innerHTML = `<p"> ${message} </p>`; 
+    actionResult.innerHTML = `<p> ${message} </p>`; 
 
     if (isPositive == true){
         console.log("called3")
@@ -16,4 +16,9 @@ function show_result_bar(isPositive, div, message){
         actionResult.classList.add("negative-result");
     }
 
+    actionResult.scrollIntoView({behavior: 'smooth'});
+    
+    setTimeout(() => {
+        actionResult.style.display = "none";
+    }, 5000);
 }

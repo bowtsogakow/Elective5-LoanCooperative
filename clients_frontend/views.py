@@ -17,7 +17,7 @@ def index(request):
     if data["status"] == 2: 
         has_loan = False
         loan = None
-
+ 
     elif data["status"] == 1:
         has_loan = True
         loan = data["loan"]
