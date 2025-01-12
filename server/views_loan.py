@@ -300,6 +300,9 @@ def get_loans_by_search(request):
         total_page = math.floor(total_page)
         total_page += 1
 
+    if total_page == 0:
+        total_page = 1
+        
     if pagination :
         included = int(pagination) * limit
 
@@ -327,8 +330,8 @@ def get_loans_by_search(request):
                 "total_amount" : loan.total,
                 "status" : loan.status, 
                 "remaining_balance" : loan.total - loan.total_amount_paid,  
-                "start_date" : loan.date_created,
-                "end_date" : loan.date_end,
+                "start_date" : loan.date_created.strftime("%m-%d-%Y"),
+                "end_date" : loan.date_end.strftime("%m-%d-%Y"),
                 "daily_payment" : loan.daily_payment, 
                 "days_left" : loan.days_total - loan.days_paid, 
                 "payment_position" : payment_position, 

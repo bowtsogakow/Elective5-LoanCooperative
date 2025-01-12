@@ -21,6 +21,9 @@ urlpatterns = [
   path("employees", views.employee_list_page, name="employee_list"),
   path("employees/add", views.add_employee_page, name = "employee_add"),
 
+  # Payments 
+  path("payments", views.payment_list_page, name = "payment_list"),
+
   # profile page 
   path("profile/<int:id>", views.profile_page, name = "profile_info"),
   

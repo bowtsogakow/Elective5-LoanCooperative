@@ -102,19 +102,19 @@
             <h5> Dashboard </h5>
             
             <div class="summary-cards">
-                <div class="summary-card">
+                <div class="summary-card" onclick = "window.location.href='{% url 'payment_list' %}';">
                     <h3>Daily Collected Payment</h3>
                     <p class="value"> &#8369; {{total_payments}}</p>
                     <p class="description">+20% from last month</p>
                 </div>
 
-                <div class="summary-card">
+                <div class="summary-card" onclick= "window.location.href='{% url 'client_list' %}';">
                     <h3>Total Clients</h3>
                     <p class="value"> {{total_clients}}</p>
                     <p class="description">+15% from last week</p>
                 </div>
 
-                <div class="summary-card">
+                <div class="summary-card" onclick="window.location.href='{% url 'loan_list' %}';">
                     <h3> Total Loaned Amount</h3>
                     <p class="value"> &#8369; {{total_loaned_amount}}</p>
                     <p class="description">+5% from yesterday</p>
@@ -131,7 +131,7 @@
                 </div>
         
                 <div class="chart-container">
-                    <h3>User Activity</h3>
+                    <h3>Client Registration</h3>
                     <div class="chart-wrapper">
                         <canvas id="myChart2" width="200" height="100"> </canvas>
                     </div>

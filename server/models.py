@@ -100,20 +100,25 @@ class Loan(models.Model):
     
 
 class Payment(models.Model):
+    receipt_number = models.CharField(max_length=20, null=True, blank=True)
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name="payments")
     amount = models.DecimalField(max_digits=12, decimal_places=2,)
     date = models.DateField(default=datetime.now().date())
+    time = models.TimeField(null=True, blank=True, default = None)  
 
     def update_loan_and_save(self, *args, **kwargs): 
-        self.amount = self.loan.daily_payment
+        days = self.amount // self.loan.daily_payment
         self.loan.total_amount_paid += self.amount
         self.date = datetime.now().date()
-        self.loan.days_paid += 1
+        self.time = datetime.now().time()
+        self.receipt_number = datetime.now().strftime("%Y%m%d%H%M%S")
+        self.loan.days_paid += days
 
         if self.loan.total_amount_paid >= self.loan.total:
             self.loan.status = "completed"
             self.loan.date_paid = datetime.now().date()
             self.loan.client.has_loan = False
+            self.loan.total_amount_paid = self.loan.total
            
         self.loan.save()
 

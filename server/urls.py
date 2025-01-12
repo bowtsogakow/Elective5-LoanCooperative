@@ -32,6 +32,7 @@ urlpatterns = [
     path("get_payment_list_by_loan/<int:loan_id>", views_payment.get_payment_list_by_loan, name="server_get_payment_list_by_loan"),
     path("get_payment_list_by_client/<int:client_id>", views_payment.get_payment_list_by_client, name="server_get_payment_list_by_client"),
     path("get_payment_table", views_payment.get_payment_table, name="server_get_payment_table"),
+    path("get_payment_by_search", views_payment.get_payment_by_search, name="server_get_payment_by_search"),
 
     #employee
     path("get_all_employees", views_employees.get_all_employees, name="server_get_all_employees"),

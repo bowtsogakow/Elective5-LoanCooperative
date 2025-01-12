@@ -125,6 +125,20 @@ def add_loan_page(request):
      "clients" : data["clients"]})
 
 @admin_required
+def payment_list_page(request):
+  path = reverse('server_get_payment_by_search')
+  url = f"{base_url}{path}"
+  response = requests.post(url)
+  data = response.json()
+  print(data["payments"])
+  return render(request, 'AgriTrust/payments.html', 
+                {"payments" : data["payments"], 
+                 "total_page" : data["total_page"], 
+                 "date_range_marker" : data["date_range_marker"]
+                 })
+
+
+@admin_required
 def employee_list_page(request):
   if request.user.is_superuser :
     permission = "superadmin"

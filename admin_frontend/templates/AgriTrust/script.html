@@ -22,3 +22,32 @@ function show_result_bar(isPositive, div, message){
         actionResult.style.display = "none";
     }, 5000);
 }
+
+function generatePDF(data, date_range_marker) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFont("Times", "normal", "bold"); 
+    doc.setFontSize(20); 
+    doc.text("Payment Reports", 105, 20, { align: "center" }); 
+
+    doc.setFont("Times", "italic", "normal");
+    doc.setFontSize(12)
+    doc.text(date_range_marker, 14, 40, {align: "left"});
+   
+    const tableData = data.map(item => [item.number_display, item.client_name, item.payment_amount, item.date, item.time]);
+
+    let pageWidth = doc.internal.pageSize.width;
+    let tableWidth = doc.getStringUnitWidth(tableData[0].join(' ')) * doc.getFontSize(); 
+    let startX = (pageWidth - tableWidth) / 2; 
+
+    doc.autoTable({
+        startY: 55,
+        startX : startX, 
+        head: [['#', 'Client Name', 'Amount', 'Date', 'Time']],
+        body: tableData,
+    });
+
+   
+    doc.save("complete_table_data.pdf");
+}

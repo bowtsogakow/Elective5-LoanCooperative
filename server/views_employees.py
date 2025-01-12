@@ -191,6 +191,9 @@ def get_employee_by_search(request):
         total_page = math.floor(total_page)
         total_page += 1
 
+    if total_page == 0:
+        total_page = 1
+
     if pagination :
         included = int(pagination) * limit
 

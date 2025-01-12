@@ -1,0 +1,253 @@
+<html> 
+    {% include 'AgriTrust/import.html' %}
+    {% include 'AgriTrust/css.html' %}
+    
+    <style> 
+        .payments-cont{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        
+            table {
+                th {
+                    background-color: var(--txt1);
+                    color: var(--txt3);
+                }
+            }
+        
+        }
+
+        .right-align-div {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+    </style>
+
+    <body> 
+        {% include 'AgriTrust/header.html' with user=user %}
+
+        <div class="payments-div cont-body">
+            <h5> Payments </h5>
+
+            <div class="cont"> 
+                <div class="payments-cont">
+                    
+                    <div class="filter-btn-div">
+                        <div class="search-cont" oninput = "handleSearchPayment(1)">
+                            <i class="fa fa-search"></i>
+                            <input type="text" oninput="" id="search-client" placeholder="Search Client"> 
+                        </div>
+                        
+                        <select id = "order-select" oninput = "handleSearchPayment(1)"> 
+                            <option value="asc"> Ascending </option>
+                            <option value="desc"> Descending </option>
+                        </select> 
+                        
+                        <select id = "sort-select" oninput = "handleSearchPayment(1)"> 
+                            <option value="name"> Client Name </option>
+                            <option value="amount"> Amount </option>
+                            <option value="date"> Date and Time </option>
+                            
+                        </select>
+
+                        <div> 
+                            <input type="text" onfocus="this.type='date'" onblur="this.type='text'" oninput = "handleSearchPayment(1)" id = "start_date_select" placeholder="From Date"> 
+                        </div>
+
+                        <div> 
+                            <input type="text" onfocus="this.type='date'" onblur="this.type='text'" oninput = "handleSearchPayment(1)" id = "end_date_select" placeholder="To Date" > 
+                        </div>
+                    </div>
+
+                    <div class = "date-range-marker" id = "date-range-marker"> 
+                        <b> {{ date_range_marker }} </b>   
+                    </div>
+
+                    <div>
+                        <table id = "payment-table" class="table table-bordered table-hover table-responsive selectable-row"> 
+                            <tr> 
+                                <th> # </th>
+                                <th> Receipt Number </th>
+                                <th> Client Name</th>
+                                <th> Amount </th>
+                                <th> Date </th>
+                                <th> Time </th>
+                            </tr>
+                            {%for payment in payments%}
+                                <tr>
+                                    <td> {{payment.number_display}} </td>
+                                    <td> {{payment.receipt_number}} </td>
+                                    <td> {{payment.client_name}} </a> </td>
+                                    <td> {{payment.payment_amount}} </td>
+                                    <td> {{payment.date}} </td>
+                                    <td> {{payment.time}} </td>
+                                </tr>   
+                            {% endfor %}
+                            </table>
+                        </div>
+                    
+                    </div>
+
+                   
+
+                    <div class="filter-btn-div two">
+                        <div> </div>
+                        <div class="pagination">
+                            <button type="button" onclick="handlePreviousPage()" class="btn btn-primary">
+                                <i class="fa fa-angle-left"></i>
+                            </button>
+                            <span id="page-indicator"> </span>
+                            <button type="button" onclick="handleNextPage()" class="btn btn-primary">
+                                <i class="fa fa-angle-right"></i>
+                            </button>
+                        </div>
+                        <div> </div>
+                    </div>
+                    
+                    <div class = "right-align-div"> 
+                        <div> </div>
+                        <button onclick="handleDownloadPaymentReports()"> Download Payment Reports </button> 
+                    </div>
+
+                </div>
+
+
+            
+
+            </div>
+        </div>
+
+
+    </body>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
+   
+   <script> 
+        {% include 'AgriTrust/script.html' %}
+
+        var currentPage = 1; 
+        var totalPage = {{ total_page }};
+
+        async function handleSearchPayment(page) {
+                
+            const response = await fetch("{% url 'server_get_payment_by_search' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    'name': document.getElementById("search-client").value,
+                    'pagination' : page, 
+                    'order' : document.getElementById("order-select").value,
+                    'sort' : document.getElementById("sort-select").value, 
+                    'start_date' : document.getElementById("start_date_select").value,
+                    'end_date' : document.getElementById("end_date_select").value
+                })
+            })    
+
+            const data = await response.json();
+            
+            if (data.status == 1) {
+                const payments = data["payments"];
+                
+                currentPage = data.pagination; 
+                totalPage = data.total_page;
+
+                var table_body = document.getElementById("payment-table");
+                table_body.innerHTML = "";
+
+                var date_range_marker = document.getElementById("date-range-marker");
+                console.log(data.date_range_marker);
+                date_range_marker.innerHTML = data.date_range_marker; 
+                
+                table_body.innerHTML += `
+                    <tr> 
+                        <th> # </th>
+                        <th> Receipt Number</th>
+                        <th> Client Name</th>
+                        <th> Amount </th>
+                        <th> Date </th>
+                        <th> Time </th>
+                    </tr>
+                `
+
+                for (payment of payments) {
+                    table_body.innerHTML += `
+                    <tr>
+                        <td> ${payment.number_display} </td>
+                        <td> ${payment.receipt_number} </td>
+                        <td> ${payment.client_name} </a> </td>
+                        <td> ${payment.payment_amount} </td>
+                        <td> ${payment.date} </td>
+                        <td> ${payment.time} </td>
+                    </tr>  
+                    `
+                }
+
+                updatePaginationDisplay();
+            
+            }
+        }
+
+
+        function handlePreviousPage(){
+            if (currentPage > 1){
+                currentPage--;
+                handleSearchLoan(currentPage);
+            }
+
+        }
+
+        function handleNextPage(){
+            console.log("click");
+            if (currentPage < totalPage){
+                currentPage++;
+                handleSearchLoan(currentPage);
+            }
+
+        }
+
+        function updatePaginationDisplay(){
+            const page_indicator = document.getElementById("page-indicator");
+            page_indicator.innerHTML = currentPage + " of " + totalPage;
+        }
+
+        async function handleDownloadPaymentReports() {
+
+            const response = await fetch("{% url 'server_get_payment_by_search' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    'name': document.getElementById("search-client").value,
+                    'pagination' : 1, 
+                    'order' : document.getElementById("order-select").value,
+                    'sort' : document.getElementById("sort-select").value, 
+                    'start_date' : document.getElementById("start_date_select").value,
+                    'end_date' : document.getElementById("end_date_select").value,
+                    'limit' : 999999
+                })
+            })
+            
+
+            const data = await response.json();
+
+            const payments = data.payments;
+            const date_range_marker = data.date_range_marker;
+
+            return generatePDF(payments, date_range_marker);
+
+        }
+
+        updatePaginationDisplay();
+
+
+    </script> 
+    
+</html>

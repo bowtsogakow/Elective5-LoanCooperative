@@ -2,7 +2,7 @@
 
     {% include 'AgriTrust/import.html' %}
     {% include 'AgriTrust/css.html' %}    
-
+ 
     <style>
         .loans-div {
             .loans-cont {
@@ -193,28 +193,28 @@
         }
 
         function handlePreviousPage(){
-                if (currentPage > 1){
-                    currentPage--;
-                    handleSearchLoan(currentPage);
-                }
-
+            if (currentPage > 1){
+                currentPage--;
+                handleSearchLoan(currentPage);
             }
 
-            function handleNextPage(){
-                console.log("click");
-                if (currentPage < totalPage){
-                    currentPage++;
-                    handleSearchLoan(currentPage);
-                }
+        }
 
+        function handleNextPage(){
+            console.log("click");
+            if (currentPage < totalPage){
+                currentPage++;
+                handleSearchLoan(currentPage);
             }
 
-            function updatePaginationDisplay(){
-                const page_indicator = document.getElementById("page-indicator");
-                page_indicator.innerHTML = currentPage + " of " + totalPage;
-            }
+        }
 
-            updatePaginationDisplay();
+        function updatePaginationDisplay(){
+            const page_indicator = document.getElementById("page-indicator");
+            page_indicator.innerHTML = currentPage + " of " + totalPage;
+        }
+
+        updatePaginationDisplay();
             
     </script>
 </html>

@@ -173,7 +173,7 @@ def get_clients_by_search(request):
     loan_status = request.data.get("loan_status")
     pagination = request.data.get("pagination")
     order = request.data.get("order")
-    limit = 25
+    limit = 10
 
     if not loan_status: 
         return Response({
@@ -212,6 +212,9 @@ def get_clients_by_search(request):
         total_page = math.floor(total_page)
         total_page += 1
 
+    if total_page == 0:
+        total_page = 1
+        
     if pagination :
         included = int(pagination) * limit
 

@@ -140,7 +140,7 @@
                         <p> Client Name     : <i> ${data.
                             
                             loan.client_name} </i></p>
-                        <p> Daily Payment   : ${data.loan.daily_payment} </p>
+                        <p> Daily Payment   : <input type = "number" value = "${data.loan.daily_payment}" name = "amount"> </p>
                         <input type="submit" onclick = "payLoan(event)"> 
                     </form > 
                 `
@@ -176,6 +176,7 @@
             event.preventDefault(); 
 
             const loan_id = document.getElementById("pay-loan-form").loan_id.value;
+            const amount = document.getElementById("pay-loan-form").amount.value;
             console.log(loan_id)
 
             const response = await fetch("{% url 'server_add_payment' %}", {
@@ -185,7 +186,8 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    loan_id : loan_id
+                    loan_id : loan_id, 
+                    amount : amount
                 })
             });
 
