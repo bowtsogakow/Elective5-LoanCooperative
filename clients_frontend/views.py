@@ -32,6 +32,7 @@ def index(request):
     response_get_payment_by_client = requests.get(url_get_payment_by_client)
     data_get_payment_by_client = response_get_payment_by_client.json()
 
+    print(data_get_loan_by_client)
     return render(request, 'clients_frontend/index.html', {
         "has_loan" : has_loan, 
         "loan" : loan,

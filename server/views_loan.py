@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from django.db.models import Q
 from server.models import ClientInfo, Loan, User
 from django.db.models import F
+from .utils import format_number_with_commas
 
 
 @api_view(["POST"])
@@ -114,19 +115,21 @@ def get_loan_by_id(request, loan_id):
     data = {
         "id" : loan.id,
         "client_name" : loan.client.full_name,
-        "amount_loaned" : loan.amount_loaned, 
+        "amount_loaned" : format_number_with_commas(loan.amount_loaned), 
         "interest_percentage" : loan.interest_percentage,
         "loan_term" : loan.loan_term,
         "interest_mode" : loan.interest_mode,
-        "interest" : loan.interest,
-        "total" : loan.total,
+        "interest" : format_number_with_commas(loan.interest),
+        "total" : format_number_with_commas(loan.total),
         "days_total" : loan.days_total,
         "days_paid" : loan.days_paid,
-        "total_amount_paid" : loan.total_amount_paid,
+        "total_amount_paid" : format_number_with_commas(loan.total_amount_paid),
+        "remaining_balance" : format_number_with_commas(loan.total - loan.total_amount_paid),
+        "payment_progress_percentage" : ((loan.total_amount_paid) / loan.total) * 100,
         "status" : loan.status, 
         "date_created" : loan.date_created,
         "date_end" : loan.date_end,
-        "daily_payment" : loan.daily_payment, 
+        "daily_payment" : format_number_with_commas(loan.daily_payment), 
         "days_left" : loan.days_total - loan.days_paid,
         "qr_code" : loan.qr_code
     }
@@ -157,10 +160,10 @@ def get_loan_list_by_client(request, client_id):
     for loan in loans : 
         data = {
             "id" : loan.id,
-            "amount" : loan.amount_loaned, 
+            "amount" : format_number_with_commas(loan.amount_loaned), 
             "interest_percentage" : loan.interest_percentage,
             "loan_term" : loan.loan_term,
-            "total" : loan.total,
+            "total" : format_number_with_commas(loan.total),
             "status" : loan.status, 
             "date_created" : loan.date_created,
             "date_end" : loan.date_end,
@@ -196,8 +199,8 @@ def get_loan_by_code(request):
     data = {
         "id" : loan.id,
         "client_name" : loan.client.full_name,
-        "daily_payment" : loan.daily_payment,
-        "balance" : loan.total - loan.total_amount_paid,
+        "daily_payment" : format_number_with_commas(loan.daily_payment),
+        "remaining_balance" : format_number_with_commas(loan.total - loan.total_amount_paid),
     }
 
     return Response({
@@ -326,13 +329,13 @@ def get_loans_by_search(request):
                 "id" : loan.id,
                 "number_display" : number_display,
                 "client_name" : loan.client.full_name,
-                "amount_loaned" : loan.amount_loaned, 
-                "total_amount" : loan.total,
+                "amount_loaned" : format_number_with_commas(loan.amount_loaned), 
+                "total_amount" : format_number_with_commas(loan.total),
                 "status" : loan.status, 
-                "remaining_balance" : loan.total - loan.total_amount_paid,  
+                "remaining_balance" : format_number_with_commas(loan.total - loan.total_amount_paid),  
                 "start_date" : loan.date_created.strftime("%m-%d-%Y"),
                 "end_date" : loan.date_end.strftime("%m-%d-%Y"),
-                "daily_payment" : loan.daily_payment, 
+                "daily_payment" : format_number_with_commas(loan.daily_payment), 
                 "days_left" : loan.days_total - loan.days_paid, 
                 "payment_position" : payment_position, 
 
@@ -349,6 +352,7 @@ def get_loans_by_search(request):
         "pagination" : pagination,
         "total_page" : total_page,
     })
+
 
 @api_view(["GET"])
 def get_latest_loan_by_client(request, client_id):
@@ -375,18 +379,18 @@ def get_latest_loan_by_client(request, client_id):
     data = {
         "id" : loan.id,
         "client_name" : loan.client.full_name,
-        "amount_loaned" : loan.amount_loaned,   
-        "total_amount" : loan.total,
+        "amount_loaned" : format_number_with_commas(loan.amount_loaned),   
+        "total_amount" : format_number_with_commas(loan.total),
         "interest_percentage" : loan.interest_percentage,   
         "status" : loan.status,
-        "remaining_balance" : remaining_balance,
+        "remaining_balance" : format_number_with_commas(remaining_balance),
         "loan_term" : loan.loan_term,
         "start_date" : loan.date_created,
         "end_date" : loan.date_end,
         "days_left" : loan.days_total - loan.days_paid,
         "payment_position" : loan.days_paid - (datetime.date.today() - loan.date_created).days,
-        "daily_payment" : loan.daily_payment,
-        "interest" : loan.interest,
+        "daily_payment" : format_number_with_commas(loan.daily_payment),
+        "interest" : format_number_with_commas(loan.interest),
         "qr_code" : loan.qr_code, 
         "progress" : progress
     }

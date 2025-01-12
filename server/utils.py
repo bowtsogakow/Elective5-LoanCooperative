@@ -2,12 +2,17 @@ import datetime
 import string 
 import random
 
-def generate_random_string(length=9):
+def generate_random_string(length=8):
     # Generate a random string of the specified length
     characters = string.ascii_letters + string.digits  # Choose the characters you want
     random_string = ''.join(random.choice(characters) for _ in range(length))
     return random_string
 
+
+def format_number_with_commas(num):
+    # Format the number with commas and ensure two decimal places
+    formatted_number = "{:,.2f}".format(num)
+    return formatted_number
 
 def parse_date(date_string):
     # List of possible date formats

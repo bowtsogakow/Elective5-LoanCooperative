@@ -8,7 +8,7 @@ from django.db.models import Sum
 from server.models import Loan, User, Payment 
 from decimal import Decimal
 from django.db.models import Q
-from .utils import parse_date
+from .utils import parse_date, format_number_with_commas
 
 @api_view(["GET"])
 def get_payment_list_by_client(request, client_id):
@@ -30,7 +30,7 @@ def get_payment_list_by_client(request, client_id):
         for payment in payments :
             data = {
                 "id": payment.id,
-                "amount": payment.amount,
+                "amount": format_number_with_commas(payment.amount),
                 "date": payment.date,
             }
 
@@ -60,7 +60,7 @@ def get_payment_list_by_loan(request, loan_id):
     for payment in payments :
         data = {
             "id": payment.id,
-            "amount": payment.amount,
+            "amount": format_number_with_commas(payment.amount),
             "date": payment.date,
         }
 
@@ -92,12 +92,6 @@ def add_payment(request):
     
     loan = Loan.objects.filter(id = loan_id).first()
 
-    if Decimal(amount) > loan.total - loan.total_amount_paid:
-        return Response({
-            "status": 0, 
-            "status_message": "Invalid input"
-        })
-
     if not loan: 
         return Response({
             "status": 0, 
@@ -112,7 +106,8 @@ def add_payment(request):
     return Response({ 
         "status" : 1, 
         "status_message": "Loan paid successfully",
-        "remaining_balance" : loan.total - loan.total_amount_paid
+        "remaining_balance" : format_number_with_commas(loan.total - loan.total_amount_paid), 
+        "receipt_number" : payment.receipt_number
     })
 
 @api_view(["POST"])
@@ -207,7 +202,7 @@ def get_payment_by_search(request):
                 "id": payment.id,
                 "number_display": number_display,
                 "receipt_number" : payment.receipt_number if payment.receipt_number else "None",
-                "payment_amount": payment.amount,
+                "payment_amount": format_number_with_commas(payment.amount) if payment.amount else "None", 
                 "date": payment.date.strftime("%m-%d-%Y"),
                 "time": payment.time.strftime("%I:%M:%S %p") if payment.time else "None",  
                 "client_name" : payment.loan.client.full_name
@@ -240,15 +235,6 @@ def get_payment_by_search(request):
         "total_page" : total_page, 
         "date_range_marker" : date_range_marker
     })
-
-
-
- 
-
-       
-
-
-
 
 
 

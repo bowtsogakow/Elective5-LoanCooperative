@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Q
 from django.db.models import Sum
+from .utils import format_number_with_commas
 
 @api_view(["GET"])
 def get_all_employees(request):
@@ -145,7 +146,7 @@ def get_employee_by_search(request):
     
     id = request.data.get("id")
     str_id = str(id)
-    name = request.data.get("name", None)
+    name = request.data.get("name")
     type = request.data.get("type")
     pagination = request.data.get("pagination")
     permission = request.data.get("permission")
@@ -377,22 +378,60 @@ def change_employee_position(request):
             "status" : 0,
             "status_message" : f"Error in updating position : {str(e)}"
         })
-
+ 
 @api_view(["GET"])
 def get_dashboard_info(request): 
     
     clients = User.objects.filter(type = "client", is_active = True).count()
+    clients_added_in_the_current_month = User.objects.filter(type = "client", is_active = True, date_joined__month = datetime.datetime.now().month).count()
+    clients_change_label = f"+{clients_added_in_the_current_month} in the current month"
+
     total_loaned_amount = Loan.objects.filter(status = "ongoing").aggregate(total = Sum('amount_loaned'))
+    first_day_of_month = datetime.date.today().replace(day=1)
+    last_month_loaned_amount = Loan.objects.filter(status = "ongoing", date_created__lte = first_day_of_month).aggregate(total = Sum('amount_loaned'))
     
+    if last_month_loaned_amount["total"] and total_loaned_amount["total"]:
+        percentage_increase = ( (total_loaned_amount["total"] - last_month_loaned_amount["total"]) / last_month_loaned_amount["total"] ) * 100
+        loan_change_label = f"+ {round(percentage_increase, 2)}% from last month"
+
+    elif last_month_loaned_amount["total"] and not ["total"]:
+        loan_change_label = f"-100% from last month"
+
+    elif not last_month_loaned_amount["total"] and total_loaned_amount["total"]:
+        loan_change_label = f"+100% from last month"
+
+    else : 
+        loan_change_label = f"+0% from last month"
+        
+    formatted_loaned_amount = format_number_with_commas(total_loaned_amount["total"])
+
     today = datetime.date.today()
     total_payments = Payment.objects.filter(date = today).aggregate(total = Sum('amount'))
+    yesterday_payments = Payment.objects.filter(date = today - datetime.timedelta(days=1)).aggregate(total = Sum('amount'))
+    formatted_total_payments = format_number_with_commas(total_payments["total"])
 
-    print(total_payments)
+    if yesterday_payments["total"] and total_payments["total"]:
+        print(yesterday_payments["total"], total_payments["total"])
+        percentage_increase = ( (total_payments["total"] - yesterday_payments["total"]) / yesterday_payments["total"] ) * 100
+        payments_change_label = f"+{round(percentage_increase, 2)}% from yesterday"
+
+    elif yesterday_payments["total"] and not ["total"]:
+        payments_change_label = f"-100% from yesterday"
+
+    elif not yesterday_payments["total"] and total_payments["total"]:
+        payments_change_label = f"+100% from yesterday"
+
+    else : 
+        payments_change_label = f"+0% from yesterday"
+
 
     return Response({
         "status" : 1,
         "status_message" : "Dashboard info retrieved successfully",
         "clients" : clients,
-        "total_loaned_amount" : total_loaned_amount["total"], 
-        "total_payments" : total_payments["total"]
+        "clients_change_label" : clients_change_label, 
+        "total_loaned_amount" : formatted_loaned_amount, 
+        "loan_change_label" : loan_change_label,   
+        "total_payments" : formatted_total_payments, 
+        "payments_change_label" : payments_change_label
     })

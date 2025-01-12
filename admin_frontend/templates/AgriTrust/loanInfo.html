@@ -4,188 +4,359 @@
     {% include 'AgriTrust/css.html' %}
 
     <style>
-        .loan-info-div,
-        .payment-history-div {
-            .loan-info-cont,
-            .payment-history-cont {
-                display: flex;
-                flex-direction: column;
-                flex-wrap: nowrap;
-                gap: 20px;
 
-                .loan-row {
+    
+        .loan-info-cont,
+        .payment-history-cont {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            gap: 20px;
+
+        }
+        
+
+        .loan-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .status-badge {
+            background-color: #E5DEFF;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            
+            {% if loan.status == 'ongoing' %}
+            color: #f1c40f;  
+            {% elif loan.status == 'completed' %}
+            color: #4CAF50;
+            {% endif %}
+        }
+
+        .progress-section {
+            margin-top: 1.5rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            height: 0.75rem;
+            background-color: #E5DEFF;
+            border-radius: 0.25rem;
+            border: 1px solid #767381;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+
+        .loan-qr{
+            display: flex;
+            justify-content: center;
+        }
+
+        .loan-grid {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .loan-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .loan-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.3);
+           
+
+            .loan-card-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #1A1F2C;
+                margin: 0 0 1.5rem 0;            
+            }
+
+            .grid-info {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            
+                .loan-item {
                     display: flex;
-                    gap: 20px;
-                    transition: 0.3s ease-in-out;
-                    padding: 10px 5px;
-                    border-radius: 5px;
-                    white-space: nowrap;
+                    align-items: flex-start;
+                    gap: 0.75rem;
+                
+                }
 
-                    .loan-info {
-                        position: relative;
-    
-                        .loan-info-label {
-                            position: absolute;
-                            top: -6;
-                            left: 10;
-                            font-weight: bold;
-                            color: var(--txt1);
-                            font-size: 70%;
-                        }
-    
-                        span {
-                            display: flex;
-                            align-items: center;
-                            padding: 15px 25px;
-                            background-color: #f3f4f6; 
-                            border-radius: 30px; 
-                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-                            color: var(--txt); 
-                            gap: 10px; 
-                            min-width: 100px; 
-                            max-width: fit-content; 
-                            white-space: nowrap; 
-    
-                            p {
-                                margin: 0;
-                            }
-    
-                            i {
-                                color: var(--bg1);
-                            }
-                        }
-                    }
+                .loan-item-label {
+                    font-size: 0.875rem;
+                    color: #8E9196;
+                    margin: 0;
+                }
+
+                .value {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: #1A1F2C;
+                    margin: 0.25rem 0 0 0;
                 }
 
             }
+
         }
+
+        .payment-row {
+            display: flex;
+            gap: 20px;
+            transition: 0.3s ease-in-out;
+            padding: 10px 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+
+            .payment-info {
+                position: relative;
+
+                .payment-info-label {
+                    position: absolute;
+                    top: -6;
+                    left: 10;
+                    font-weight: bold;
+                    color: var(--txt1);
+                    font-size: 70%;
+                }
+
+                span {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px 25px;
+                    background-color: #f3f4f6; 
+                    border-radius: 30px; 
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+                    color: var(--txt); 
+                    gap: 10px; 
+                    min-width: 100px; 
+                    max-width: fit-content; 
+                    white-space: nowrap; 
+
+                    p {
+                        margin: 0;
+                    }
+
+                    i {
+                        color: var(--bg1);
+                    }
+                }
+            }
+        }
+
+        
+        
     </style>
     
     <body> 
-
+        
         {% include 'AgriTrust/header.html' with user=user %}
         <div class="loan-info-div cont-body">
             <a href = "{% url 'loan_list' %}"> &lt; Back </a> <br><br>
-    
+            
             <div class="cont">
                 <div class="loan-info-cont">
                     
-                    <h2> {{ loan.client_name }} </h2>
-                    <div>
-
-                        <div class = "loan-row">
-                            <div class="loan-info">
-    
-                                <div class="loan-info-label"> Amount Loaned </div>
-                                <span>
-                                    <i class="fas fa-coins"></i>
-                                    <p>₱ {{ loan.amount_loaned }}</p>
-                                </span>
-                            </div>
-                            
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Interest %</div>
-                                <span>
-                                    <i class="fas fa-arrow-up"></i>
-                                    <p> {{ loan.interest_percentage }}%</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Loan term </div>
-                                <span>
-                                    <i class="fas fa-hourglass-half"></i>
-                                    <p>{{ loan.loan_term }} mos.</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Interest Amount</div>
-                                <span>
-                                    <i class="fas fa-coins"></i>
-                                    <p>₱ {{ loan.interest }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Total Amount </div>
-                                <span>
-                                    <i class="fas fa-coins"></i>
-                                    <p>₱ {{ loan.total }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Total Days </div>
-                                <span>
-                                    <i class="fas fa-calendar"></i>
-                                    <p>{{ loan.days_total }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Days Paid </div>
-                                <span>
-                                    <i class="fas fa-calendar"></i>
-                                    <p>{{ loan.days_paid }}</p>
-                                </span>
-                            </div>
-                        </div>
-    
-                        <div class = "loan-row">
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Total Amount Paid </div>
-                                <span>
-                                    <i class="fas fa-coins"></i>
-                                    <p>₱ {{ loan.total_amount_paid }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Loan Status </div>
-                                <span>
-                                    <i class="fas fa-circle-info"></i>
-                                    <p>{{ loan.status }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Date Created </div>
-                                <span>
-                                    <i class="fas fa-calendar"></i>
-                                    <p>{{ loan.date_created }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Date End </div>
-                                <span>
-                                    <i class="fas fa-calendar"></i>
-                                    <p>{{ loan.date_end }}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> Daily Payment </div>
-                                <span>
-                                    <i class="fas fa-coins"></i>
-                                    <p>₱ {{ loan.daily_payment}}</p>
-                                </span>
-                            </div>
-    
-                            <div class="loan-info">
-                                <div class="loan-info-label"> days_left </div>
-                                <span>
-                                    <i class="fas fa-coins"></i>
-                                    <p>{{ loan.days_left }}</p>
-                                </span>
-                            </div>
-                        </div>
+                    <div class = "loan-info-header"> 
+                        <h2> {{ loan.client_name }} </h2>
+                        <span class = "status-badge"> {{ loan.status }} </span>
                     </div>
                     
-                    <div class="qr-code">
+                    <div class="qr-code loan-qr">
                         <canvas id = "qrcode-image"> {{loan.qr_code}} </canvas>
                     </div>
+                    
+                    
+                    <div class = "loan-grid">
+
+                        <div class="loan-card">
+
+                            <h5 class = "loan-card-title"> Loan Information </h5>
+
+                            <div class="grid-info">
+
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Amount Loaned</p>
+                                        <p class="value">₱ {{ loan.amount_loaned }}</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-arrow-up"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Interest %</p>
+                                        <p class="value">{{ loan.interest_percentage }}%</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-hourglass-half"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Loan term</p>
+                                        <p class="value">{{ loan.loan_term }} mos.</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Interest Amount</p>
+                                        <p class="value">₱ {{ loan.interest }}</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Total Amount</p>
+                                        <p class="value">₱ {{ loan.total }}</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Total Days</p>
+                                        <p class="value">{{ loan.days_total }}</p>
+                                    </div>
+                                </div>
+                        
+                                
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Date Created</p>
+                                        <p class="value">{{ loan.date_created }}</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Date Due</p>
+                                        <p class="value">{{ loan.date_end }}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    
+                        <div class="loan-card">
+                            <h5 class = "loan-card-title"> Loan Status</h5>
+                            
+                            <div class="grid-info">
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Total Amount Paid</p>
+                                        <p class="value">₱ {{ loan.total_amount_paid }}</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label"> Remaining Balance </p>
+                                        <p class="value">₱ {{ loan.remaining_balance }}</p>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Daily Payment</p>
+                                        <p class="value">₱ {{ loan.daily_payment}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Days Paid</p>
+                                        <p class="value">{{ loan.days_paid }}</p>
+                                    </div>
+                                </div>
+                        
+                                <div class="loan-item">
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                    </span>
+                                    <div>
+                                        <p class="loan-item-label">Days Left</p>
+                                        <p class="value">{{ loan.days_left }}</p>
+                                    </div>
+                                </div>
+                        
+                            </div>
+
+
+                            <div class="progress-section">
+                                <div class="progress-header">
+                                    <p>Payment Progress</p>
+                                    <p> ₱{{loan.total_amount_paid}} of ₱{{loan.total}} </p>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style = "width: {{ loan.payment_progress_percentage }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                        
+                    
                 </div>
             </div>
         </div>
@@ -194,9 +365,9 @@
             <h3> Payments History </h3> 
             <div class="payment-history-cont cont">
                     {%for payment in payments%}
-                        <div class="loan-row">
-                            <div class="loan-info">
-                                <div class="loan-info-label">
+                        <div class="payment-row">
+                            <div class="payment-info">
+                                <div class="payment-info-label">
                                     Payment Date
                                 </div>
                                 <span>
@@ -204,8 +375,8 @@
                                     <p>{{payment.date}}</p>
                                 </span>
                             </div>
-                            <div class="loan-info">
-                                <div class="loan-info-label">
+                            <div class="payment-info">
+                                <div class="payment-info-label">
                                     Amount Paid
                                 </div>
                                 <span>
@@ -246,3 +417,4 @@
     </script> 
 
 </html>
+

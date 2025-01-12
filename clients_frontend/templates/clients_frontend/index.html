@@ -112,7 +112,65 @@
             .qr-code-client {
                 margin: 20px 0;
             }
-    
+
+            .loan-history-cont,
+            .payment-history-cont {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                gap: 20px;
+            }
+
+            .loan-info-cont,
+            .payment-info-cont {
+                display: flex;
+                gap: 20px;
+                cursor: pointer;
+                transition: 0.3s ease-in-out;
+                padding: 10px 5px;
+                border-radius: 5px;
+                white-space: nowrap;
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+            }
+
+            .client-info {
+                position: relative;
+
+                .client-info-label {
+                    position: absolute;
+                    top: -6;
+                    left: 10;
+                    font-weight: bold;
+                    color: var(--txt1);
+                    font-size: 70%;
+                }
+
+                span {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px 25px;
+                    background-color: #f3f4f6; 
+                    border-radius: 30px; 
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+                    color: var(--txt); 
+                    gap: 10px; 
+                    min-width: 100px; 
+                    max-width: fit-content; 
+                    white-space: nowrap; 
+
+                    p {
+                        margin: 0;
+                    }
+
+                    i {
+                        color: var(--bg1);
+                    }
+                }
+            }
+
             @media (max-width: 768px) {
                 .main-content {
                 flex-direction: column;
@@ -252,7 +310,7 @@
                         <h3> Loan History </h3> 
                         
                         <div class="loan-history-cont cont">
-                            {%for loan in loans%}
+                            {%for loan in loan_list%}
                                 <div 
                                     class="loan-info-cont"
                                     onclick="window.location.href='{% url 'loan_info' loan.id %}';"
@@ -383,7 +441,11 @@
 
             }
 
-            setQrCode();
+            {% if loan %}
+
+                setQrCode();
+
+            {% endif %}
 
         </script>
     </body>

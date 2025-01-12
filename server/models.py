@@ -117,8 +117,12 @@ class Payment(models.Model):
         if self.loan.total_amount_paid >= self.loan.total:
             self.loan.status = "completed"
             self.loan.date_paid = datetime.now().date()
+            self.loan.days_paid = self.loan.days_total
             self.loan.client.has_loan = False
             self.loan.total_amount_paid = self.loan.total
+            self.loan.client.has_loan = False
+
+            self.loan.client.save()
            
         self.loan.save()
 

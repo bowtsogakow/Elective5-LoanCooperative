@@ -34,8 +34,11 @@ def index(request):
     "payment_table" : data_payment_table["result"], 
     "client_registration_table" : data_client_registration_table["result"],
     "total_payments" : data_get_dashboard_info["total_payments"],
+    "payments_change_label" : data_get_dashboard_info["payments_change_label"],
     "total_loaned_amount" : data_get_dashboard_info["total_loaned_amount"],
-    "total_clients" : data_get_dashboard_info["clients"]
+    "loan_change_label" : data_get_dashboard_info["loan_change_label"],
+    "total_clients" : data_get_dashboard_info["clients"],
+    "clients_change_label" : data_get_dashboard_info["clients_change_label"],
   })
 
 # clients 

@@ -45,10 +45,30 @@
 
         /* Styling for QR result */
         .qr-result {
-            margin-top: 15px;
+            margin-top: 25px;
             font-size: 16px;
             color: #333;
             font-weight: bold;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        #qr-result-border {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;  
+            width: 60%;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px; /* Space between form rows */
+        }
+
+        input[type="submit"] {
+            width: 100%;
         }
 
         /* Styling for the reader container */
@@ -59,7 +79,7 @@
         }
 
         /* Adjustments for small screens */
-        @media (max-width: 600px) {
+        @media (max-width: 800px) {
             .container {
                 padding: 15px; /* Less padding for small screens */
             }
@@ -71,30 +91,40 @@
 
             .qr-result {
                 margin-top: 30px;
-                font-size: 14px; /* Adjust font size for smaller screens */
+                font-size: 12px; /* Adjust font size for smaller screens */
+ 
+            }
 
-                p {
-                    font-size: 18px;
-                    margin: 5px;
-                }
+            #qr-result-border {
+                padding: 15px; 
+                width: 100%;
             }
         }
     </style>
 </head>
 
 <body>
+
     {% include 'cashier_frontend/header.html' with user=user %}
+    
     <div class="container">
+
         <h1>QR Code Scanner</h1>
         <button id="scanButton" class="scan-button">Scan QR Code</button>
+        
         <div id="qrScanner" class="scanner-container" style="display: none;">
             <div id="reader"></div>
         </div>
 
-        <div id="qrResult" class="qr-result"> QR Code Result will appear here </div>
+        <div id="qrResult" class="qr-result">
+            <div id = "qr-result-border"> 
+                QR Code Result will appear here
+            </div> 
+        </div>
     </div>
 
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
     <script>
         const scanButton = document.getElementById('scanButton');
         const qrScanner = document.getElementById('qrScanner');
@@ -112,7 +142,7 @@
             console.log("Scan button clicked");
             qrScanner.style.display = 'block'; // Show scanner
             scanButton.style.display = 'none'; // Hide scan button
-            
+            qrResult.innerHTML = "Scanning QR Code...";
             // Start scanning
             qrCodeScanner.render(onScanSuccess, onScanError)
                 .catch(err => {
@@ -135,23 +165,37 @@
 
             if(data.status == 1){
                 form = `
-                    <form id = "pay-loan-form">
-                        <input type="hidden" name="loan_id" value="${data.loan.id}">
-                        <p> Client Name     : <i> ${data.
+                    <div id = "qr-result-border"> 
+                        <form id="pay-loan-form">
+                            <input type="hidden" name="loan_id" value="${data.loan.id}">
                             
-                            loan.client_name} </i></p>
-                        <p> Daily Payment   : <input type = "number" value = "${data.loan.daily_payment}" name = "amount"> </p>
-                        <input type="submit" onclick = "payLoan(event)"> 
-                    </form > 
-                `
+                            <div class="result-row">
+                                <label>Client Name:</label>
+                                <i>${data.loan.client_name}</i>
+                            </div>
+                            
+                            <div class="result-row">
+                                <label>Remaining Balance:</label>
+                                <span> ₱ ${data.loan.remaining_balance}</span>
+                            </div>
+                            
+                            <div class="result-row">
+                                <label>Payment:</label>
+                                <input type="number" value="${data.loan.daily_payment}" name="amount">
+                            </div>
+                            
+                            <input type="submit" onclick="payLoan(event)" value="Submit">
+                        </form>
+                    </div>
+                    `
                 qrResult.innerHTML = form;
+                
                 
             }
         }
 
-        // Error callback
         function onScanError(errorMessage) {
-            console.log("Scan error: ", errorMessage); // Log error if any
+            console.log("Scan error: ", errorMessage);
         }
     
         async function getLoanInfo(qr_code){
@@ -197,8 +241,21 @@
 
             if(data.status == 1){
                 qrResult.innerHTML = `
-                    <p> ${data.status_message} </p>
-                    <p> Remaining Balance : ${data.remaining_balance} </p>
+                    <div id = "qr-result-border"> 
+                        <div class = "result-row"> 
+                            <p> ${data.status_message} </p>
+                        </div>
+
+                        <div class = "result-row"> 
+                            <label> Receipt Number : </label>
+                            <span> ${data.receipt_number} </span>
+                        </div>
+
+                        <div class = "result-row"> 
+                            <label> Remaining Balance : </label> 
+                            <span> ₱ ${data.remaining_balance} </span>
+                        </div>
+                    </div>
                 `;
             }
 

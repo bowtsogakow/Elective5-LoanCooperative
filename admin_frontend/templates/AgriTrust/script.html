@@ -35,7 +35,7 @@ function generatePDF(data, date_range_marker) {
     doc.setFontSize(12)
     doc.text(date_range_marker, 14, 40, {align: "left"});
    
-    const tableData = data.map(item => [item.number_display, item.client_name, item.payment_amount, item.date, item.time]);
+    const tableData = data.map(item => [item.number_display, item.receipt_number, item.client_name, item.payment_amount, item.date, item.time]);
 
     let pageWidth = doc.internal.pageSize.width;
     let tableWidth = doc.getStringUnitWidth(tableData[0].join(' ')) * doc.getFontSize(); 
@@ -44,10 +44,10 @@ function generatePDF(data, date_range_marker) {
     doc.autoTable({
         startY: 55,
         startX : startX, 
-        head: [['#', 'Client Name', 'Amount', 'Date', 'Time']],
+        head: [['#', 'Receipt Number', 'Client Name', 'Amount', 'Date', 'Time']],
         body: tableData,
     });
 
    
-    doc.save("complete_table_data.pdf");
+    doc.save("payment_reports.pdf");
 }

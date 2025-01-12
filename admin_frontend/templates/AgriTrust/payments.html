@@ -17,11 +17,6 @@
         
         }
 
-        .right-align-div {
-            display: flex;
-            justify-content: flex-end;
-        }
-
     </style>
 
     <body> 
@@ -79,7 +74,7 @@
                                     <td> {{payment.number_display}} </td>
                                     <td> {{payment.receipt_number}} </td>
                                     <td> {{payment.client_name}} </a> </td>
-                                    <td> {{payment.payment_amount}} </td>
+                                    <td> ₱{{payment.payment_amount}} </td>
                                     <td> {{payment.date}} </td>
                                     <td> {{payment.time}} </td>
                                 </tr>   
@@ -181,7 +176,7 @@
                         <td> ${payment.number_display} </td>
                         <td> ${payment.receipt_number} </td>
                         <td> ${payment.client_name} </a> </td>
-                        <td> ${payment.payment_amount} </td>
+                        <td> ₱${payment.payment_amount} </td>
                         <td> ${payment.date} </td>
                         <td> ${payment.time} </td>
                     </tr>  
