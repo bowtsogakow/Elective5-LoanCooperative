@@ -112,7 +112,7 @@
                             </button>
                         </div>
                         <div > 
-                            <button onclick="handleDeleteClients()"> Delete Selected Clients </button> 
+                            <button onclick="handleDeleteEmployees()"> Delete Selected Employees </button> 
                         </div>
                     </div>
                     
@@ -130,6 +130,7 @@
             var totalPage = {{ total_page }};
 
             function getTotalRows () {
+                totalRows = 0; 
                 document.querySelectorAll(".employee-row").forEach(row => {
                     totalRows++; 
                 })
@@ -214,6 +215,9 @@
                 else if (data.status == 0) {
                     show_result_bar(false, "#action-result", data.status_message);
                 }
+
+                updatePaginationDisplay();
+                getTotalRows();
 
             }
             

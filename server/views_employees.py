@@ -408,10 +408,8 @@ def get_dashboard_info(request):
     today = datetime.date.today()
     total_payments = Payment.objects.filter(date = today).aggregate(total = Sum('amount'))
     yesterday_payments = Payment.objects.filter(date = today - datetime.timedelta(days=1)).aggregate(total = Sum('amount'))
-    formatted_total_payments = format_number_with_commas(total_payments["total"])
 
     if yesterday_payments["total"] and total_payments["total"]:
-        print(yesterday_payments["total"], total_payments["total"])
         percentage_increase = ( (total_payments["total"] - yesterday_payments["total"]) / yesterday_payments["total"] ) * 100
         payments_change_label = f"+{round(percentage_increase, 2)}% from yesterday"
 
@@ -424,6 +422,11 @@ def get_dashboard_info(request):
     else : 
         payments_change_label = f"+0% from yesterday"
 
+    if total_payments["total"]:
+        formatted_total_payments = format_number_with_commas(total_payments["total"])
+
+    else : 
+        formatted_total_payments = 0
 
     return Response({
         "status" : 1,
